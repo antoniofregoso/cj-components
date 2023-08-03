@@ -56,7 +56,7 @@ export class LanguajeSelector extends FunnelElement {
     }
 
     buttonLang(button){
-        return button===this.getAttribute("value")?'button is-focused is-info"':'button'
+        return button===this.getAttribute("value")?`button is-focused${this.state.selectedClass===undefined?``:` ${this.state.selectedClass}`}"`:'button'
     }
 
 
