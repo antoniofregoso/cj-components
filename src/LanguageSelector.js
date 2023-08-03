@@ -28,6 +28,7 @@ export class LanguajeSelector extends FunnelElement {
       attributeChangedCallback(name, old, now) {
         if (now==='value'){
             this.state.context.lang = now
+
         }}
 
     getButtons(){
@@ -55,7 +56,7 @@ export class LanguajeSelector extends FunnelElement {
     }
 
     buttonLang(button){
-        return button===this.getAttribute("value")?'button is-focused':'button'
+        return button===this.getAttribute("value")?'button is-focused is-info"':'button'
     }
 
 
