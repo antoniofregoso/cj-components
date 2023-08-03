@@ -45,3 +45,4 @@ export function loading(props){
     let dir = directions.find(el=>el==props.direction)
     document.body.innerHTML += `<div class="pageloader ${props?.color!=undefined?props.color:`is-light`} ${dir!=undefined?dir:''} is-active"><span class="title">Pageloader</span></div>`;
 }
+

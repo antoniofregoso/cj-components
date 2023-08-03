@@ -22,8 +22,9 @@ import { TakeMe } from "./TakeMe";
 import { VideoPlayer } from "./VideoPlayer";
 import { WebinarInvitation } from "./WebinarInvitation";
 import { WhatsappBubble } from "./WhatsappBubble";
+import { OmnichannelChat } from "./OmnichannelChat";
 
 export { BlocksHtml, BlocksImage, CallToAction, CardsList, CountdownTimer, DiscountCoupon, FormLead,
     FunnelElement, FunnelFooter, FunnelHeader, FunnelPage, HeroBanner, HeroDouble, ImageText, LanguajeSelector,
     LevelCentered, LinkinBio, SocialProof, StepsComponent, SwiperElement, TakeMe, VideoPlayer, WebinarInvitation,
-    WhatsappBubble }
+    WhatsappBubble, OmnichannelChat }
