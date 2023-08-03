@@ -1,7 +1,7 @@
 import { BlocksHtml } from "./BlocksHtml";
 import { BlocksImage } from "./BlocksImage";
 import { CallToAction } from "./CallToAction";
-import { CardList } from "./CardsList";
+import { CardsList } from "./CardsList";
 import { CountdownTimer } from "./CountdownTimer";
 import { DiscountCoupon } from "./DiscountCoupon";
 import { FormLead } from "./FormLead";
@@ -12,7 +12,7 @@ import { FunnelPage } from "./FunnelPage";
 import { HeroBanner } from "./HeroBanner";
 import { HeroDouble} from "./HeroDouble";
 import { ImageText } from "./ImageText";
-import { LanguajeSelector } from "/LanguageSelector";
+import { LanguajeSelector } from "./LanguageSelector";
 import { LevelCentered } from "./LevelCentered";
 import { LinkinBio } from "./LinkinBio";
 import { SocialProof } from "./SocialProof";
@@ -23,7 +23,7 @@ import { VideoPlayer } from "./VideoPlayer";
 import { WebinarInvitation } from "./WebinarInvitation";
 import { WhatsappBubble } from "./WhatsappBubble";
 
-export { BlocksHtml, BlocksImage, CallToAction, CardList, CountdownTimer, DiscountCoupon, FormLead,
+export { BlocksHtml, BlocksImage, CallToAction, CardsList, CountdownTimer, DiscountCoupon, FormLead,
     FunnelElement, FunnelFooter, FunnelHeader, FunnelPage, HeroBanner, HeroDouble, ImageText, LanguajeSelector,
     LevelCentered, LinkinBio, SocialProof, StepsComponent, SwiperElement, TakeMe, VideoPlayer, WebinarInvitation,
     WhatsappBubble }
