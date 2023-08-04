@@ -3,7 +3,10 @@ import { slugify } from "./utils";
 
 export class OmnichannelChat extends FunnelElement {
     #default = {
-        isExpanded: false
+        isExpanded: false,
+        color:'rgba(255, 0, 0, 1)',
+        background:'rgba(128,128,128,0.7)'
+
     }
 
     constructor(props={}){
@@ -20,8 +23,8 @@ export class OmnichannelChat extends FunnelElement {
         bottom: 20px;
         right: 40px;
         transform: translateX(50%);
-        background-color: #007bff;
-        color: #fff;
+        background-color: ${this.state.background};
+        color: ${this.state.color};
         font-weight: bold;
         border-radius: 50%;
         width: 50px;
