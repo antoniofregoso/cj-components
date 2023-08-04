@@ -8,7 +8,7 @@ export function slugify(input) {
     // replace invalid chars with spaces
     slug = slug.replace(/[^a-z0-9\s-]/g, ' ').trim();
     // replace multiple spaces or hyphens with a single hyphen
-    slug = slug.replace(/[\s-]+/g, '-');
+    slug = slug.replace(/[\s-]+/g, '%20');
     return slug;
 
     }

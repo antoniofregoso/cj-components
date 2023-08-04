@@ -152,8 +152,8 @@ export class OmnichannelChat extends FunnelElement {
         <ul>
             ${this.state.whatsapp?.phone===undefined?``:`<li id="chatWhatsapp"><a target="_blank" href="https://wa.me/${this.state.whatsapp.phone}?text=${this.state.whatsapp?.text===undefined?``:slugify(this.state.whatsapp.text[this.state.context.lang])}" >${this.#whatsApp}</a></li>`}
             ${this.state.messenger?.pagename===undefined?``:`<li id="chatMessenger"><a target="_blank" href="https://m.me/${this.state.messenger.pagename}?text=${this.state.messenger?.text===undefined?``:slugify(this.state.messenger.text[this.state.context.lang])}" id="chatMessenger">${this.#messenger}</a></li>`}
-            ${this.state.instagram?.username===undefined?``:`<li id="chatInstagram"><a target="_blank" href="https://ig.me/m/${this.state.instagram.username}?message=${this.state.instagram?.text===undefined?``:slugify(this.state.instagram.text[this.state.context.lang])}">${this.#instagram}</a></li>`}
-            ${this.state.telegram?.username===undefined?``:`<li id="chatTelegram"><a target="_blank" href="https://t.me/#{website.telegram_channel}?text=#{website.telegram_text}">${this.#telegram}</a></li>`}
+            ${this.state.instagram?.username===undefined?``:`<li id="chatInstagram"><a target="_blank" href="https://ig.me/m/${this.state.instagram.username}?text=${this.state.instagram?.text===undefined?``:slugify(this.state.instagram.text[this.state.context.lang])}">${this.#instagram}</a></li>`}
+            ${this.state.telegram?.username===undefined?``:`<li id="chatTelegram"><a target="_blank" href="https://t.me/#{website.telegram_channel}?text=${this.state.telegram?.text===undefined?``:slugify(this.state.telegram.text[this.state.context.lang])}">${this.#telegram}</a></li>`}
             ${this.state.ai?.eventName===undefined?``:`<li ><a  href="#" id="chatAI">${this.#ai}</a></li>`}
         </ul>
         </div>
