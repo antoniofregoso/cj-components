@@ -2,7 +2,9 @@ import { FunnelElement } from "./FunnelElement";
 
 export class FunnelPage extends FunnelElement {
 
-    #default = {};
+    #default = {
+      classList:[]
+    };
     components = [];
 
     constructor(props){

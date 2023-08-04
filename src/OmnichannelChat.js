@@ -129,8 +129,8 @@ export class OmnichannelChat extends FunnelElement {
         <div class="chat-content" id="chatContent" style="display: none;">
         <ul>
             ${this.state.whatsapp?.phone===undefined?``:`<li id="chatWhatsapp"><a target="_blank" href="https://wa.me/${this.state.whatsapp.phone}?text=${this.state.whatsapp?.text===undefined?``:slugify(this.state.whatsapp.text[this.state.context.lang])}" >${this.#whatsApp}</a></li>`}
-            ${this.state.messenger?.pagename===undefined?``:`<li ><a target="_blank" href="https://m.me/#{website.messenger_channel}?text=#{website.messenger_text}" id="chatMessenger">${this.#messenger}</a></li>`}
-            ${this.state.instagram?.username===undefined?``:`<li ><a target="_blank" href="https://ig.me/m/">${this.#instagram}</a></li>`}
+            ${this.state.messenger?.pagename===undefined?``:`<li ><a target="_blank" href="https://m.me/${this.state.messenger.pagename}?text=${this.state.messenger?.text===undefined?``:slugify(this.state.messenger.text[this.state.context.lang])}" id="chatMessenger">${this.#messenger}</a></li>`}
+            ${this.state.instagram?.username===undefined?``:`<li ><a target="_blank" href="https://ig.me/m/${this.state.instagram.username}?message=${this.state.instagram?.text===undefined?``:slugify(this.state.instagram.text[this.state.context.lang])}">${this.#instagram}</a></li>`}
             ${this.state.telegram?.username===undefined?``:`<li id="chatTelegram"><a target="_blank" href="https://t.me/#{website.telegram_channel}?text=#{website.telegram_text}">${this.#telegram}</a></li>`}
             ${this.state.ai?.phone===undefined?``:`<li ><a  href="#{website.ai_channel}" id="chatAI">${this.#ai}</a></li>`}
         </ul>
