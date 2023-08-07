@@ -5,7 +5,7 @@ export class OmnichannelChat extends FunnelElement {
     #default = {
         isExpanded: false,
         color:'rgba(255, 0, 0, 1)',
-        background:'rgba(128,128,128,0.7)'
+        background:'rgba(128,128,128,0.6)'
 
     }
 
@@ -43,7 +43,7 @@ export class OmnichannelChat extends FunnelElement {
         bottom: 80px;
         right:10px;
         border-radius: 20px;
-        background-color:rgba(255,255,255,0.3);
+        background-color:rgba(255,255,255,0.7);
         text-align: center;
         transition: height 0.3s;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
