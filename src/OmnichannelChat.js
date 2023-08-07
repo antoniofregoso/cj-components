@@ -73,7 +73,7 @@ export class OmnichannelChat extends FunnelElement {
             fill: #229ED9;
         }
         #chatAI {
-            fill: #d4aa00;
+            fill: #220055;
         }
     `
 
