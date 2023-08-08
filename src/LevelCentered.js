@@ -19,7 +19,7 @@ export class LevelCentered extends FunnelElement {
             <div class="level-item has-text-centered">
                 <div>
                 ${item.icon.svg!=undefined? 
-                    `<div ${this.getClasses(["icon"], item.icon?.classList)}  ${this.setAnimation(item.icon.animation)}>${item.icon.svg}</div>`:``}
+                    `<div ${this.getClasses(["icon", "title"], item.icon?.classList)}  ${this.setAnimation(item.icon.animation)}>${item.icon.svg}</div>`:``}
                 ${item.title?.text[this.state.context.lang]!=undefined? 
                     `<p ${this.getClasses(["title"], item.title?.classList)}  ${this.setAnimation(item.title.animation)}>${item.title.text[this.state.context.lang]}</p>`:``}
                 ${item.buttons!=undefined?this.buttonsRender(item.buttons):''}
