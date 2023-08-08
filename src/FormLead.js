@@ -1420,6 +1420,7 @@ export class FormLead extends FunnelElement {
 
     render(){
         this.innerHTML =  /* html */`
+        <div  ${this.getClasses([], this.state?.classList)}>
         ${this.state.title!=undefined||this.state.subtitle!=undefined?`
         <div ${this.getClasses(["content"], this.state.title?.classList)}>
         
@@ -1510,6 +1511,7 @@ export class FormLead extends FunnelElement {
                     </div>
                 </form>
             </div>
+        </div>
         </div>
         `
         this.addEvents();
