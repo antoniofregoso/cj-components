@@ -87,32 +87,18 @@ export class FunnelElement extends HTMLElement {
 
     #getButtons(props){
         if(props!=undefined){
-            console.log(props)
             let buttons = '';
-            Object.entries(props).forEach(([key, value])=>{                
-                let button = ['button']; 
-                if (props[key]['classList']!= undefined){
-                    button = [...new Set([...button, ...props[key]['classList']])];
-                }
-                let buttonClass = button.toString().replaceAll(",", " ");
-                buttons += `<button id=${key} class="${buttonClass}" ${this.setAnimation(props[key]['animation'])}>
-                    ${props[key]['text'][this.state.context.lang]}
-                </button>`;
-            });
+            props.forEach(el=>{
+                buttons += `<button id="${el.id}" ${this.getClasses(['button'], el.classList)}>${el?.text[this.state.context.lang]}</button>`;
+            })
             return buttons;
         }else return ''
     }
    
     buttonsRender(props){
-        let buttons = ['buttons'];
-        if (props.classList!= undefined){
-            buttons = [...new Set([...buttons, ...props.classList])];
-        }
-       let buttonClass = buttons.toString().replaceAll(",", " ")
         if(props!=undefined){
-            console.log('Props', props)
             let buttons = /* html */`
-                <p class="${buttonClass}">
+                <p ${this.getClasses(['buttons'], props.classList)}>
                     ${this.#getButtons(props.buttons)}
                 </p>
             `
