@@ -1431,7 +1431,7 @@ export class FormLead extends FunnelElement {
     </div>`:''}
         <div class="columns is-centered">
             <div ${this.getClasses(["column"], this.state.form?.classList)}  ${this.setAnimation(this.state.form?.animation)}>
-                <form id="lead-form" class="box" >
+                <form id="lead-form" ${this.getClasses(["box"], this.state.form?.box?.classList)} >
                 ${this.state.name?.disabled!=true?`
                     <div class="field" ${this.setAnimation(this.state.name?.animation)}>
                         <label class="label">${this.state.name?.label[this.state.context.lang]}</label>
