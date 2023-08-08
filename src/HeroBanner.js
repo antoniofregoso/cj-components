@@ -3,10 +3,7 @@ import { FunnelElement } from "./FunnelElement";
 export class HeroBanner extends FunnelElement {
   
     #default = {
-      alignment:"centered",
-      scrollButton:{
-        color:"White"
-      }
+      alignment:"has-text-centered"
     };
 
 constructor(props={}){
@@ -61,7 +58,7 @@ addEvents(){
       item.addEventListener("click",this)
     });    
   } 
-  if (this.state.scrollButton===true){
+  if (this.state.scrollButton?.color!=undefined){
     let scroolDown = this.querySelector(".scroll-down");
     scroolDown.addEventListener("click",this);
   }
@@ -70,7 +67,7 @@ addEvents(){
 #icon = /* svg */`<svg xmlns="http://www.w3.org/2000/svg" class="iconMedium" aria-hidden="true" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM127 281c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l71 71L232 136c0-13.3 10.7-24 24-24s24 10.7 24 24l0 182.1 71-71c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 393c-9.4 9.4-24.6 9.4-33.9 0L127 281z"/></svg>`
 
 styleIcon(){
-  if (this.state.scrollButton===true){
+  if (this.state.scrollButton?.color!=undefined){
     let icon = this.querySelector("svg");
     icon.style.fill = this.state.scrollButton.color;
   }
@@ -87,7 +84,7 @@ render(){
       text-shadow: 1px 1px 2px black;
     }
     ${this.state.backgroundImage?.url!=undefined?`
-    #${this.state.id} {
+    #${this.state.id}-content {
       background-image: url("${this.state.backgroundImage.url}");
       background-position: center center;
       background-attachment: fixed;
@@ -102,8 +99,8 @@ render(){
     }
     `:''}
   </style>
-  <div ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)}>
-    <div class="hero-body">
+  <div ${`id="${this.state.id}-content"`} ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)}>
+    <div class="hero-body ${this.state.alignment}">
       <div ${this.getClasses(["container"], this.state.body?.classList)}>
         ${this.state.title?.text[this.state.context.lang]!=undefined?`
           <p ${this.getClasses(["title"], this.state.title?.classList)} ${this.setAnimation(this.state.title.animation)}>
@@ -117,7 +114,7 @@ render(){
           this.buttonsRender(this.state.buttons):''}
       </div>
     </div>
-    ${this.state.scrollButton===true?`
+    ${this.state.scrollButton?.color!=undefined?`
     <div class="hero-foot has-text-centered">
       <span class="icon scroll-down">
         ${ this.#icon }
