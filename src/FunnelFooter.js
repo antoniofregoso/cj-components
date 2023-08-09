@@ -19,7 +19,7 @@ export class FunnelFooter extends FunnelElement {
                 <p><a href="${ this.state.privacyPolicy.url }">${ this.state.privacyPolicy.text[this.state.context.lang] }</a></p>
             </div>
             <div class="has-text-left">
-                <h4>Powered by <a href="https://www.conference.com.mx/tecnologias">Conference</a></h4>
+                <h4>Powered by <a href="https://www.conference.com.mx/comercializacion-digital">Conference</a></h4>
             </div>
         </footer>
         `;
