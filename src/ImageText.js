@@ -17,7 +17,7 @@ export class ImageText extends FunnelElement {
         {
             this.setAttribute("img-wide",this.state.imgWide);
         }
-        this.classList.add('columns','is-vcentered', 'is-gapless', 'mb-0');
+        this.classList.add('columns','is-vcentered', 'is-gapless');
         this.updateClassList();
     }
 
