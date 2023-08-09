@@ -92,8 +92,8 @@ render(){
       background-size: auto;
       text-shadow: 1px 1px 2px black;
     }
-    @media only screen and (max-width: 767px) {
-      #${this.state.id} {
+    @media (max-width: 768px) {
+      #${this.state.id}-content {
         background-image: url("${this.state.backgroundImage?.urlMobile}");
       }
     }
