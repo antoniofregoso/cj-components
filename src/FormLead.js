@@ -101,6 +101,7 @@ export class FormLead extends FunnelElement {
         this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.validationEmail = false;
         this.validationPhone = false;
+        this.classList.add('has-background-link')
        
     }
 
@@ -1344,6 +1345,12 @@ export class FormLead extends FunnelElement {
 
     handleEvent(event) {
         let leadForm = this.querySelector("form")
+        let eventName;
+        if(this.state.eventName===undefined){
+        eventName = "user:click-lead"
+        }else {
+        eventName = this.state.eventName
+        }
         if (event.type === "change"&&event.target.id==='phone'){
             let code = leadForm.codes.options[leadForm.codes.selectedIndex].value;
             let country = this.#countryCode.find(country => country.dial_code==code)
@@ -1366,7 +1373,7 @@ export class FormLead extends FunnelElement {
             }
         }else if (event.type === "click"&&event.target.id==='cancel-lead'){
                 event.preventDefault();
-                const cancelLead = new CustomEvent('user:cancelLead',{
+                const cancelLead = new CustomEvent(eventName,{
                 detail:{click:event.target.id},
                 bubbles: true,
                 composed: true
@@ -1397,8 +1404,8 @@ export class FormLead extends FunnelElement {
                 if (leadForm?.description!=undefined){
                     data['description'] = leadForm.description.value;
                 }
-                const lead = new CustomEvent('user:createLead',{
-                    detail:{lead:data},
+                const lead = new CustomEvent(eventName,{
+                    detail:{click:event.target.id, lead:data},
                     bubbles: true,
                     composed: true
                 });
@@ -1422,8 +1429,7 @@ export class FormLead extends FunnelElement {
         this.innerHTML =  /* html */`
         <div  ${this.getClasses([], this.state?.classList)}>
         ${this.state.title!=undefined||this.state.subtitle!=undefined?`
-        <div ${this.getClasses(["content"], this.state.title?.classList)}>
-        
+        <div ${this.getClasses(["content"], this.state.title?.classList)}>        
         ${this.state.title?.text[this.state.context.lang]!=undefined?`
         <h1 ${this.getClasses([], this.state.title?.classList)}  ${this.setAnimation(this.state.title.animation)}>${this.state.title.text[this.state.context.lang]}</h1>`:``}
         ${this.state.subtitle?.text[this.state.context.lang]!=undefined?`
