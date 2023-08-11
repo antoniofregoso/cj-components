@@ -5,6 +5,7 @@ export class FormLead extends FunnelElement {
 
     
     #default = {
+        eventName:"user:click-lead",
         name:{
             label:{
                 es:"Nombre",
@@ -99,11 +100,27 @@ export class FormLead extends FunnelElement {
         super();
         this.state =this.initState(this.#default,props);
         this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+        this.setAttribute("stage","awaiting")
         this.validationEmail = false;
         this.validationPhone = false;
-        this.classList.add('has-background-link')
        
     }
+
+    static get observedAttributes() {
+        return ["stage"];
+      }
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        if (newValue==="submited"){
+            const lead = new CustomEvent(this.state.eventName,{
+                detail:{received:'server'},
+                bubbles: true,
+                composed: true
+            });
+            this.dispatchEvent(lead);
+        }
+      }
+      
 
     #countryCode = [
         {
@@ -1344,14 +1361,17 @@ export class FormLead extends FunnelElement {
     }
 
     handleEvent(event) {
+        console.log(this.state.eventName)
         let leadForm = this.querySelector("form")
-        let eventName;
-        if(this.state.eventName===undefined){
-        eventName = "user:click-lead"
-        }else {
-        eventName = this.state.eventName
-        }
-        if (event.type === "change"&&event.target.id==='phone'){
+        if (event.type === "click"&&event.target.id==='cancel-lead'){
+            const lead = new CustomEvent(this.state.eventName,{
+                detail:{click:event.target.id},
+                bubbles: true,
+                composed: true
+            });
+            this.dispatchEvent(lead);
+
+        }else if (event.type === "change"&&event.target.id==='phone'){
             let code = leadForm.codes.options[leadForm.codes.selectedIndex].value;
             let country = this.#countryCode.find(country => country.dial_code==code)
             let phone = code + ' ' + event.target.value;
@@ -1373,7 +1393,7 @@ export class FormLead extends FunnelElement {
             }
         }else if (event.type === "click"&&event.target.id==='cancel-lead'){
                 event.preventDefault();
-                const cancelLead = new CustomEvent(eventName,{
+                const cancelLead = new CustomEvent(this.state.eventName,{
                 detail:{click:event.target.id},
                 bubbles: true,
                 composed: true
@@ -1404,7 +1424,7 @@ export class FormLead extends FunnelElement {
                 if (leadForm?.description!=undefined){
                     data['description'] = leadForm.description.value;
                 }
-                const lead = new CustomEvent(eventName,{
+                const lead = new CustomEvent(this.state.eventName,{
                     detail:{click:event.target.id, lead:data},
                     bubbles: true,
                     composed: true
