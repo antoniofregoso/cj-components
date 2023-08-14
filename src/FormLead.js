@@ -1361,7 +1361,6 @@ export class FormLead extends FunnelElement {
     }
 
     handleEvent(event) {
-        console.log(this.state.eventName)
         let leadForm = this.querySelector("form")
         if (event.type === "click"&&event.target.id==='cancel-lead'){
             const lead = new CustomEvent(this.state.eventName,{
@@ -1457,7 +1456,7 @@ export class FormLead extends FunnelElement {
     </div>`:''}
         <div class="columns is-centered">
             <div ${this.getClasses(["column"], this.state.form?.classList)}  ${this.setAnimation(this.state.form?.animation)}>
-                <form id="lead-form" ${this.getClasses(["box"], this.state.form?.box?.classList)} >
+                <form id="form-${this.state.id}" ${this.getClasses(["box"], this.state.form?.box?.classList)} >
                 ${this.state.name?.disabled!=true?`
                     <div class="field" ${this.setAnimation(this.state.name?.animation)}>
                         <label class="label">${this.state.name?.label[this.state.context.lang]}</label>
