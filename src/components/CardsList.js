@@ -1,6 +1,6 @@
-import { FunnelElement } from "./FunnelElement";
+import { AppElement } from "@buyerjourney/bj-core";
 
-export class CardsList extends FunnelElement {
+export class CardsList extends AppElement {
     #default = {
         cardsWidth:4
     };
@@ -8,7 +8,7 @@ export class CardsList extends FunnelElement {
     constructor(props={}){
         super();
         this.state =this.initState(this.#default,props);
-        this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+        this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
     }
 
     #card(props){
@@ -31,7 +31,7 @@ export class CardsList extends FunnelElement {
                 }
                 ${props.content!=undefined?`<div ${this.getClasses(["card-content"], props.content.classList)} ${this.setAnimation(props.content.animation)}>
                         ${props.content.title!=undefined?`
-                        <p ${this.getClasses(["title"], props.content.title.classList)} ${this.setAnimation(props.header.title.animation)}" ${this.setAnimation(props.content.title.animation)}>
+                        <p ${this.getClasses(["title"], props.content.title.classList)}  ${this.setAnimation(props.content.title.animation)}>
                         ${props.content.title.text[this.state.context.lang]}
                         </p>`:''}
                         ${props.content.subtitle!=undefined?`
@@ -57,15 +57,10 @@ export class CardsList extends FunnelElement {
     #getFooter(props){
         if(props!=undefined){
             let render = '';
-            Object.entries(props).forEach(([key, value])=>{
-                let button = ['card-footer-item']; 
-                if (props[key]['classList']!= undefined){
-                    button = [...new Set([...button, ...props[key]['classList']])];
-                }
-                let buttonClass = button.toString().replaceAll(",", " ");
-                render += `<button id=${key} class="${buttonClass}" ${this.setAnimation(props[key]['animation'])}>
+            Object.entries(props).forEach(([key, value])=>{                
+                render += `<a class="card-footer-item" href="${props[key]['href']}"  ${this.setAnimation(props[key]['animation'])}>
                     ${props[key]['text'][this.state.context.lang]}
-                </button>`;
+                </a>`;
             });
             return render;
         }else return '';
@@ -73,9 +68,11 @@ export class CardsList extends FunnelElement {
 
     #getCards(){        
         let cardsHtml = ``;
-        this.state.cards.forEach(card => {
-            cardsHtml+= this.#card(card);
-        });
+        if (this.state.cards!=undefined){
+            this.state.cards.forEach(card => {
+                cardsHtml+= this.#card(card);
+            });
+        }
         return cardsHtml;
     }
 
@@ -88,7 +85,7 @@ export class CardsList extends FunnelElement {
               eventName = this.state.eventName
             }
             const clickFunnel = new CustomEvent(eventName,{
-            detail:{click:event.target.id},
+            detail:{source:event.target.id},
             bubbles: true,
             composed: true
         });
@@ -96,27 +93,14 @@ export class CardsList extends FunnelElement {
         }
     }
 
-    addEvents(){
-        let buttons = this.querySelectorAll("button");
-        if (buttons.length>0){
-          buttons.forEach((item)=>{
-            item.addEventListener("click",this)
-          });    
-        }  
-      }
-
     render(){
         this.innerHTML =  /* html */`
-            <div ${this.getClasses(["content"], this.state.classList)}>
-                ${this.state.title?.text[this.state.context.lang]!=undefined?`
-                <h1 ${this.getClasses([], this.state.title?.classList)}  ${this.setAnimation(this.state.title.animation)}>${this.state.title.text[this.state.context.lang]}</h1>`:``}
-                ${this.state.subtitle?.text[this.state.context.lang]!=undefined?`
-                <h2 ${this.getClasses([], this.state.subtitle?.classList)}  ${this.setAnimation(this.state.subtitle.animation)}>${this.state.subtitle.text[this.state.context.lang]}</h2">`:``}
-            </div>
+        <div ${this.getClasses(["section"], this.state.classList)}>
+            ${this.getTitles(this.state)}
             <div class="columns is-multiline mx-4">
                 ${this.#getCards()}
             </div>
-        `
+        </div>`
         this.addEvents();
     }
 

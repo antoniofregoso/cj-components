@@ -1,6 +1,6 @@
-import { FunnelElement } from "./FunnelElement";
+import { AppElement } from "@buyerjourney/bj-core";
 
-export class CountdownTimer extends FunnelElement {
+export class CountdownTimer extends AppElement {
 
     #default = {
         withContainer:true,
@@ -48,7 +48,7 @@ export class CountdownTimer extends FunnelElement {
     constructor(props={}){
         super();
         this.state =this.initState(this.#default,props);
-        this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+        this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.setAttribute("value",this.state.value);
         const presentDate = new Date();
         const presentTime = presentDate.getTime();

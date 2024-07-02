@@ -1,6 +1,8 @@
-import { FunnelElement } from "./FunnelElement";
+import { AppElement } from "@buyerjourney/bj-core";
+import { icon } from "@fortawesome/fontawesome-svg-core";
+import { faCircleArrowDown } from '@fortawesome/free-solid-svg-icons';
 
-export class HeroBanner extends FunnelElement {
+export class HeroBanner extends AppElement {
   
     #default = {
       alignment:"has-text-centered"
@@ -9,7 +11,8 @@ export class HeroBanner extends FunnelElement {
 constructor(props={}){
     super();
     this.state =this.initState(this.#default,props);
-    this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+    this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+   
 }  
 
 static get observedAttributes() {
@@ -30,7 +33,7 @@ handleEvent(event) {
                 eventName = this.state.buttons.eventName
               }
               const clickFunnel = new CustomEvent(eventName,{
-              detail:{click:event.target.id},
+              detail:{source:event.target.id},
               bubbles: true,
               composed: true
               });
@@ -51,27 +54,7 @@ scrollDown(){
 
 
 
-addEvents(){
-  let buttons = this.querySelectorAll("button");
-  if (buttons.length>0){
-    buttons.forEach((item)=>{
-      item.addEventListener("click",this)
-    });    
-  } 
-  if (this.state.scrollButton?.color!=undefined){
-    let scroolDown = this.querySelector(".scroll-down");
-    scroolDown.addEventListener("click",this);
-  }
-}
-
-#icon = /* svg */`<svg xmlns="http://www.w3.org/2000/svg" class="iconMedium" aria-hidden="true" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM127 281c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l71 71L232 136c0-13.3 10.7-24 24-24s24 10.7 24 24l0 182.1 71-71c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 393c-9.4 9.4-24.6 9.4-33.9 0L127 281z"/></svg>`
-
-styleIcon(){
-  if (this.state.scrollButton?.color!=undefined){
-    let icon = this.querySelector("svg");
-    icon.style.fill = this.state.scrollButton.color;
-  }
-}
+#icon = icon(faCircleArrowDown, {classes: ['fa-3x',  this.state.scrollButton?.color!=undefined?this.state.scrollButton?.color!=undefined:'has-text-white']}).html[0];
 
 
 render(){
@@ -86,44 +69,51 @@ render(){
     ${this.state.backgroundImage?.url!=undefined?`
     #${this.state.id}-content {
       background-image: url("${this.state.backgroundImage.url}");
-      background-position: center center;
-      background-attachment: fixed;
       background-repeat: no-repeat;
-      background-size: auto;
-      text-shadow: 1px 1px 2px black;
+      background-position: center;
+      background-size: cover;
+      ${this.state.backgroundImage?.fixed?`background-attachment: fixed;`:''}
+      ${this.state.backgroundImage?.filter?`filter: ${this.state.backgroundImage?.filter};`:''}
     }
-    @media (max-width: 768px) {
+    `:''}
+    ${this.state.backgroundImage?.urlMobile?`@media (max-width: 768px) {
       #${this.state.id}-content {
         background-image: url("${this.state.backgroundImage?.urlMobile}");
       }
-    }
-    `:''}
+    }`:''}
   </style>
   <div ${`id="${this.state.id}-content"`} ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)}>
     <div class="hero-body ${this.state.alignment}">
       <div ${this.getClasses(["container"], this.state.body?.classList)}>
+        ${this.state.caption?.text[this.state.context.lang]!=undefined?`
+        <p ${this.getClasses(["subtitle"], this.state.caption?.classList)}  ${this.setAnimation(this.state.caption.animation)}>
+        ${this.state.caption.text[this.state.context.lang]}
+        </p>`:''}      
         ${this.state.title?.text[this.state.context.lang]!=undefined?`
           <p ${this.getClasses(["title"], this.state.title?.classList)} ${this.setAnimation(this.state.title.animation)}>
             ${this.state.title.text[this.state.context.lang]}
           </p>`:''}
-          ${this.state.subtitle?.text[this.state.context.lang]!=undefined?`
+        ${this.state.subtitle?.text[this.state.context.lang]!=undefined?`
           <p ${this.getClasses(["subtitle"], this.state.subtitle?.classList)}  ${this.setAnimation(this.state.subtitle.animation)}>
           ${this.state.subtitle.text[this.state.context.lang]}
           </p>`:''}
-          ${this.state.buttons!=undefined?
+        ${this.state.buttons!=undefined?
           this.buttonsRender(this.state.buttons):''}
       </div>
     </div>
     ${this.state.scrollButton?.color!=undefined?`
     <div class="hero-foot has-text-centered">
       <span class="icon scroll-down">
-        ${ this.#icon }
+          ${this.#icon}
       </span>
     </div>`:''}
     </div>
     `;
-    this.styleIcon();
     this.addEvents();
+    if (this.state.scrollButton?.color!=undefined){
+      let scroolDown = this.querySelector(".scroll-down");
+      scroolDown.addEventListener("click",this);
+    }
     }
 
 }

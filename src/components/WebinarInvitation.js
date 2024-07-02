@@ -1,13 +1,13 @@
-import { FunnelElement } from "./FunnelElement";
+import { AppElement } from "@buyerjourney/bj-core";
 
-export class WebinarInvitation extends FunnelElement {
+export class WebinarInvitation extends AppElement {
 
     #default = {}
 
     constructor(props={}){
         super();
         this.state =this.initState(this.#default,props);
-        this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+        this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
     }
 
     handleEvent(event) {

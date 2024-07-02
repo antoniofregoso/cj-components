@@ -1,6 +1,6 @@
-import { FunnelElement } from "./FunnelElement";
+import { AppElement } from "@buyerjourney/bj-core";
 
-export class VideoPlayer extends FunnelElement {
+export class VideoPlayer extends AppElement {
 
     #default = {
         message:{
@@ -17,7 +17,7 @@ export class VideoPlayer extends FunnelElement {
     constructor(props={}){
         super();
         this.state =this.initState(this.#default,props);
-        this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+        this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.setAttribute("alignment",this.state.alignment);
         this.state.videoSource = this.#detectVideoSource(this.state.video.src);
     }

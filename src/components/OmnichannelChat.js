@@ -1,7 +1,7 @@
-import { FunnelElement } from "./FunnelElement";
-import { slugify } from "./utils";
+import { AppElement } from "@buyerjourney/bj-core";
+import { slugify } from "@buyerjourney/bj-core";
 
-export class OmnichannelChat extends FunnelElement {
+export class OmnichannelChat extends AppElement {
     #default = {
         isExpanded: false,
         color:'rgba(255, 0, 0, 1)',
@@ -12,7 +12,7 @@ export class OmnichannelChat extends FunnelElement {
     constructor(props={}){
         super();
         this.state =this.initState(this.#default,props);
-        this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+        this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.setAttribute("value",this.state.value||'closed');
         this.attachShadow({ mode: "open" }); 
     }
