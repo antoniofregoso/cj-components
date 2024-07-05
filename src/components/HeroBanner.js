@@ -1,5 +1,6 @@
 import { AppElement } from "@buyerjourney/bj-core";
 import { icon } from "@fortawesome/fontawesome-svg-core";
+import { Remarkable } from "remarkable";
 import { faCircleArrowDown } from '@fortawesome/free-solid-svg-icons';
 
 export class HeroBanner extends AppElement {
@@ -12,6 +13,7 @@ constructor(props={}){
     super();
     this.state =this.initState(this.#default,props);
     this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+    this.md = new Remarkable();
    
 }  
 
@@ -97,6 +99,10 @@ render(){
           <p ${this.getClasses(["subtitle"], this.state.subtitle?.classList)}  ${this.setAnimation(this.state.subtitle.animation)}>
           ${this.state.subtitle.text[this.state.context.lang]}
           </p>`:''}
+        ${this.state.description?.text[this.state.context.lang]!=undefined?`
+          <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
+              ${this.md.render(this.state.description?.text[this.state.context.lang])}
+          </div>`:''}  
         ${this.state.buttons!=undefined?
           this.buttonsRender(this.state.buttons):''}
       </div>

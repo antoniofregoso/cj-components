@@ -1,5 +1,5 @@
 import { AppElement } from "@buyerjourney/bj-core";
-import SimpleParallax from "simple-parallax-js";
+import SimpleParallax from "simple-parallax-js/vanilla";
 import { Remarkable } from "remarkable";
 
 export class ImageText extends AppElement {
@@ -18,7 +18,6 @@ export class ImageText extends AppElement {
         this.setAttribute("text-width",this.state.textWidth);
         this.setAttribute("img-width",this.state.imageWidth);
         this.classList.add('columns','is-vcentered', 'is-gapless','my-0');
-        this.updateClassList();
         this.md = new Remarkable();
     }
 
@@ -69,7 +68,7 @@ export class ImageText extends AppElement {
             `
         let text = /* html */`  
         <div ${this.getClasses(["column"], this.state.textWidth)}>
-            <div  class="p-4"> 
+            <div  class="p-4 content"> 
                 ${this.state.caption?.text[this.state.context.lang]!=undefined?`
                 <p ${this.getClasses(["subtitle"], this.state.caption?.classList)}  ${this.setAnimation(this.state.caption.animation)}>
                 ${this.state.caption.text[this.state.context.lang]}
