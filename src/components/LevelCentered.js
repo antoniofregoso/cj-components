@@ -1,4 +1,6 @@
 import { AppElement } from "@buyerjourney/bj-core";
+import { icon } from "@fortawesome/fontawesome-svg-core";
+import { far } from '@fortawesome/free-regular-svg-icons';
 
 export class LevelCentered extends AppElement {
 
@@ -14,32 +16,33 @@ export class LevelCentered extends AppElement {
 
     #getItems(){
         let itemsHtml = ``;
-        this.state.items.forEach(item=>{
-            itemsHtml+= /* html */`
+        if (this.state.items?.length>0){
+            this.state.items.forEach(item=>{
+            itemsHtml+= /* html */`            
             <div class="level-item has-text-centered">
                 <div>
-                ${item.icon.svg!=undefined? 
-                    `<div ${this.getClasses(["icon", "title"], item.icon?.classList)}  ${this.setAnimation(item.icon.animation)}>${item.icon.svg}</div>`:``}
-                ${item.title?.text[this.state.context.lang]!=undefined? 
-                    `<p ${this.getClasses(["title"], item.title?.classList)}  ${this.setAnimation(item.title.animation)}>${item.title.text[this.state.context.lang]}</p>`:``}
-                ${item.buttons!=undefined?this.buttonsRender(item.buttons):''}
-                ${item.heading?.text[this.state.context.lang]!=undefined? 
-                    `<p ${this.getClasses(["heading"], item.heading?.classList)}  ${this.setAnimation(item.heading.animation)}>${item.heading.text[this.state.context.lang]}</p>`:``}
-                
+                ${item.icon?.name!=undefined?`
+                    <div class="icon title">
+                        ${this.#getIcon("far", item.icon.name)}
+                    </div>                    
+                    `:''}
+                    
+                    <p class="heading"></p>
+                    <p class="title">789</p>
                 </div>
             </div>`;
-            
         });
+        }
+        
         return itemsHtml;
     }
 
-    styleIcons(){
-        let icons = this.querySelectorAll("svg");
-        icons.forEach(icon => {
-            icon.style.fill = this.state.iconsColor||'black';
-        })
+    #getIcon(prefix, iconName) {
+        //return icon({ prefix: prefix, iconName: iconName }).html[0];
+        return 'Hola'
       }
 
+   
     handleEvent(event) {
         if (event.type === "click") {
             let eventName;
@@ -68,21 +71,11 @@ export class LevelCentered extends AppElement {
 
     render(){
         this.innerHTML =  /* html */`
-        ${this.state.title!=undefined||this.state.subtitle!=undefined?`
-            <div ${this.getClasses(["content"], this.state.title?.classList)}>
-                ${this.state.title?.text[this.state.context.lang]!=undefined?`
-                <h1 ${this.getClasses([], this.state.title?.classList)} ${this.setAnimation(this.state.title.animation)}>
-                    ${this.state.title.text[this.state.context.lang]}</h1>`:``}
-                ${this.state.subtitle?.text[this.state.context.lang]!=undefined?`
-                <h2 ${this.getClasses([], this.state.subtitle?.classList)} ${this.setAnimation(this.state.subtitle.animation)}>
-                    ${this.state.subtitle.text[this.state.context.lang]}</h2">`:``}
-            </div>`:''}
-        <div ${this.getClasses(["level"], this.state.level?.classList)}>
-            ${this.#getItems()};
-        </div>
+        <nav class="level">
+            ${this.#getItems()}
+        </nav>
         `
-        this.styleIcons();
-        this.addEvents();
+       
     }
 
 }
