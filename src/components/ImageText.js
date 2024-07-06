@@ -46,17 +46,7 @@ export class ImageText extends AppElement {
               }
           }
       
-      
-      
-      
-      addEvents(){
-        let buttons = this.querySelectorAll("button");
-        if (buttons.length>0){
-          buttons.forEach((item)=>{
-            item.addEventListener("click",this)
-          });    
-        }  
-      }
+
 
     render(){
         let img = /* html */`

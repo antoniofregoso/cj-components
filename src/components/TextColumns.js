@@ -18,13 +18,24 @@ export class TextColumns extends AppElement {
         this.render()
       }
 
-    handleEvent(event){
-
+      handleEvent(event){
+        if (event.type === "click") {
+            let eventName;
+            if(this.state.buttons.eventName===undefined){
+              eventName = "user:click-text-columns"
+            }else {
+              eventName = this.state.buttons.eventName
+            }
+            const clickFunnel = new CustomEvent(eventName,{
+            detail:{source:event.target.id},
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(clickFunnel);
+        }
     }
 
-    addEvents(){
-
-    }
+ 
 
     render(){
         this.innerHTML =  /* html */`
@@ -48,7 +59,7 @@ export class TextColumns extends AppElement {
              ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
         </div>
         `;
-
+        this.addEvents();
     }
 
 }

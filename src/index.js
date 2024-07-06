@@ -8,7 +8,8 @@ export * from './components/LevelCentered';
 export * from './components/OmnichannelChat';
 export * from './components/StepsComponent';
 export * from './components/TextAccordion';
-export * from './components/TextColumns'
+export * from './components/TextColumns';
+export * from './components/TextNotification';
 export * from "./components/TextSection";
 export * from './components/VideoPlayer';
 export * from './components/WebinarInvitation';
