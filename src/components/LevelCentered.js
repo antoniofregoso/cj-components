@@ -1,6 +1,7 @@
 import { AppElement } from "@buyerjourney/bj-core";
-import { icon } from "@fortawesome/fontawesome-svg-core";
+import { icon, library } from "@fortawesome/fontawesome-svg-core";
 import { far } from '@fortawesome/free-regular-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
 export class LevelCentered extends AppElement {
 
@@ -12,7 +13,23 @@ export class LevelCentered extends AppElement {
         super();
         this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+        library.add(far, fas);
     }
+
+    /**
+     * 
+     * @param {*} prefix 
+     * @param {*} iconName 
+     * @returns 
+     */
+    #getIcon(prefix, iconName) {
+        try {
+            return icon({ prefix: prefix, iconName: iconName }).html[0];
+        } catch(error) {
+            console.error(`There is no icon ${prefix} ${iconName} on the far and fas kits`)
+            return(icon({ prefix: 'fas', iconName: 'circle-exclamation' }).html[0])
+        }
+      }
 
     #getItems(){
         let itemsHtml = ``;
@@ -22,8 +39,8 @@ export class LevelCentered extends AppElement {
             <div class="level-item has-text-centered">
                 <div>
                 ${item.icon?.name!=undefined?`
-                    <div class="icon title">
-                        ${this.#getIcon("far", item.icon.name)}
+                    <div class="icon title  has-text-info">
+                        ${this.#getIcon(item.icon.prefix,item.icon.name)}
                     </div>                    
                     `:''}
                     
@@ -37,10 +54,6 @@ export class LevelCentered extends AppElement {
         return itemsHtml;
     }
 
-    #getIcon(prefix, iconName) {
-        //return icon({ prefix: prefix, iconName: iconName }).html[0];
-        return 'Hola'
-      }
 
    
     handleEvent(event) {
