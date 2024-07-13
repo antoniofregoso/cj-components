@@ -4,10 +4,17 @@ import { Remarkable } from "remarkable";
 export class MediaList extends AppElement {
 
     #default = {
+      mediaObjects:{
+        classList:["is-6"]
+      },
+      context:{
+        lang:"en"
+    }
         };
 
     constructor(props={}){
         super();
+        this.eventName = "user:click-media-list"
         this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.md = new Remarkable();
@@ -53,24 +60,29 @@ export class MediaList extends AppElement {
     `};
 
     #getItems(){
+      console.log('Puto',this.state.mediaObjects?.items)
       let items = '';
-      this.state.mediaObjects?.items.forEach(el=>{
-        items += this.#mediaObject(el)
-      });
+      if (this.state.mediaObjects?.items!=undefined){
+        this.state.mediaObjects?.items.forEach(el=>{
+          items += this.#mediaObject(el)
+        });
+      }
       return items;
     }
 
     render(){
         this.innerHTML =  /* html */`
-        <div ${this.getClasses(["section","container"], this.state?.classList)}>  
-        ${this.getTitles(this.state)}
-            <div class="columns is-centered">
-              <div ${this.getClasses(["column"], this.state.mediaObjects?.classList)}>
-                ${this.#getItems()}
-              </div>
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+            <div class="container my-4">
+                ${this.getTitles()}
+                <div class="columns is-centered">
+                    <div ${this.getClasses(["column"], this.state.mediaObjects?.classList)}>
+                      ${this.#getItems()}
+                      ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
+                    </div>
+                </div>
             </div>
-            ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''}  
-            </div> 
+        </section>
         `;
         this.addEvents()
     }

@@ -5,7 +5,10 @@ export class OmnichannelChat extends AppElement {
     #default = {
         isExpanded: false,
         color:'rgba(255, 0, 0, 1)',
-        background:'rgba(128,128,128,0.6)'
+        background:'rgba(128,128,128,0.6)',
+        context:{
+          lang:"en"
+      }
 
     }
 

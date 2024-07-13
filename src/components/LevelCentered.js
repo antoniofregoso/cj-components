@@ -6,7 +6,9 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 export class LevelCentered extends AppElement {
 
     #default = {
-        withContainer:true
+      context:{
+        lang:"en"
+    }
         };
 
     constructor(props={}){
@@ -35,18 +37,25 @@ export class LevelCentered extends AppElement {
         let itemsHtml = ``;
         if (this.state.items?.length>0){
             this.state.items.forEach(item=>{
-            itemsHtml+= /* html */`            
-            <div class="level-item has-text-centered">
-                <div>
-                ${item.icon?.name!=undefined?`
-                    <div class="icon title  has-text-info">
-                        ${this.#getIcon(item.icon.prefix,item.icon.name)}
-                    </div>                    
-                    `:''}
-                    
-                    <p class="heading"></p>
-                    <p class="title">789</p>
-                </div>
+            itemsHtml+= /* html */`
+            <div class="section  py-2 ">            
+                <nav class="level-item has-text-centered ">
+                    <div>
+                        ${item.icon?.name!=undefined?`
+                            <div ${this.getClasses(["icon", "title"], item.icon?.classList)} ${this.setAnimation(item.icon?.animation)}>
+                                ${this.#getIcon(item.icon.prefix,item.icon.name)}
+                            </div>                    
+                            `:''}                    
+                        <p ${this.getClasses(["heading"], item.heading?.classList)}
+                            ${this.setAnimation(item.heading?.animation)}>
+                            ${item.heading?.text[this.state.context.lang]!=undefined?item.heading.text[this.state.context.lang]:''}
+                        </p>
+                        <p ${this.getClasses(["title"], item.title?.classList)}
+                        ${this.setAnimation(item.title?.animation)}>
+                            ${item.title?.text[this.state.context.lang]!=undefined?item.title.text[this.state.context.lang]:''}
+                        </p>
+                    </div>
+                </nav>
             </div>`;
         });
         }
@@ -84,7 +93,7 @@ export class LevelCentered extends AppElement {
 
     render(){
         this.innerHTML =  /* html */`
-        <nav class="level">
+        <nav ${this.getClasses(["level"], this.state?.classList)}>
             ${this.#getItems()}
         </nav>
         `

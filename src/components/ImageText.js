@@ -7,11 +7,15 @@ export class ImageText extends AppElement {
     #default = {
         imagePosition:"left",
         textWidth:"is-half",
-        imageWidth:"is-half"
+        imageWidth:"is-half",
+        context:{
+          lang:"en"
+      }
         };
 
     constructor(props={}){
         super();
+        this.eventName = "user:click-image-text";
         this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.setAttribute("img-pos",this.state.imagePosition);
@@ -29,23 +33,7 @@ export class ImageText extends AppElement {
         this.render()
       }
       
-      handleEvent(event) {
-              if (event.type === "click") {
-                  let eventName;
-                  if(this.state.buttons.eventName===undefined){
-                    eventName = "user:click-image-text"
-                  }else {
-                    eventName = this.state.buttons.eventName
-                  }
-                  const clickFunnel = new CustomEvent(eventName,{
-                  detail:{source:event.target.id},
-                  bubbles: true,
-                  composed: true
-              });
-              this.dispatchEvent(clickFunnel);
-              }
-          }
-      
+    
 
 
     render(){
@@ -80,8 +68,12 @@ export class ImageText extends AppElement {
         </div>
             `
         this.innerHTML =  /* html */`
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+            <div class="columns is-vcentered is-gapless my-0"> 
                 ${this.state.imagePosition==='right'?text:img}
                 ${this.state.imagePosition==='right'?img:text}
+            </div>
+        </section>
         `
         this.addEvents()
         if(this.state.image?.paralax!=undefined){

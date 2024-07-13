@@ -3,6 +3,9 @@ import { AppElement } from "@buyerjourney/bj-core";
 export class StepsComponent extends AppElement {
 
     #default = {
+        context:{
+          lang:"en"
+      }
         
     }
 

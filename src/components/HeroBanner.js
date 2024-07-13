@@ -6,11 +6,15 @@ import { faCircleArrowDown } from '@fortawesome/free-solid-svg-icons';
 export class HeroBanner extends AppElement {
   
     #default = {
-      alignment:"has-text-centered"
+      alignment:"has-text-centered",
+      context:{
+        lang:"en"
+    }
     };
 
 constructor(props={}){
     super();
+    this.eventName = "user:click-hero-banner";
     this.state =this.initState(this.#default,props);
     this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
     this.md = new Remarkable();
@@ -28,13 +32,10 @@ attributeChangedCallback(name, old, now) {
 handleEvent(event) {
         if (event.type === "click") {
             if (event.target.tagName==='BUTTON'){
-              let eventName;
-              if(this.state.buttons.eventName===undefined){
-                eventName = "user:click-hero"
-              }else {
-                eventName = this.state.buttons.eventName
+              if(this.state.buttons.eventName!=undefined){
+                this.eventName = this.state.buttons.eventName             
               }
-              const clickFunnel = new CustomEvent(eventName,{
+              const clickFunnel = new CustomEvent(this.eventName,{
               detail:{source:event.target.id},
               bubbles: true,
               composed: true

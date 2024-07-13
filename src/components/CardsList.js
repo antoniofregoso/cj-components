@@ -2,7 +2,10 @@ import { AppElement } from "@buyerjourney/bj-core";
 
 export class CardsList extends AppElement {
     #default = {
-        cardsWidth:4
+        cardsWidth:4,
+        context:{
+            lang:"en"
+        }
     };
 
     constructor(props={}){

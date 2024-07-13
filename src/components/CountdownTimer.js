@@ -43,28 +43,33 @@ export class CountdownTimer extends AppElement {
             text:{
                 en:"We are very sorry. The promotion has expired"
             }
+        },
+        context:{
+            lang:"en"
         }};
 
     constructor(props={}){
         super();
+        this.eventName = "timer:time-out";
         this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
-        this.setAttribute("value",this.state.value);
         const presentDate = new Date();
         const presentTime = presentDate.getTime();
-        const dueDate = new Date(this.state.dueDate);
+        const dueDate = this.#getStart(this.getAttribute("start"));
         this.timeRemaining = dueDate - presentTime;
         this.start()
     }
 
-
-
-    static get observedAttributes() { return ['value']; }
-
-    attributeChangedCallback(name, old, now) {
-        this.state.value = this.attribute2CamelCase(now);
-        this.render()
+    #getStart(dateString){
+        try {
+            let dueDate = new Date(this.getAttribute("start"));
+            return dueDate;
+        }catch (error) {
+            console.error(error)
+            return new dateString("2024-07-12T10:00:00");
+        }
     }
+
 
     getTime() {
         return {
@@ -87,9 +92,7 @@ export class CountdownTimer extends AppElement {
             this.timeRemaining-=1000;
             if (0>this.timeRemaining){
                 this.setAttribute("value",'timed-out');
-                if(this.state.eventName===undefined){
-                    eventName = "timer:time-out"
-                  }else {
+                if(this.state.eventName!=undefined){
                     eventName = this.state.eventName
                   }
                   const timeOut = new CustomEvent(eventName,{
@@ -99,6 +102,7 @@ export class CountdownTimer extends AppElement {
                 });
                 clearInterval(intervalId);
                 this.dispatchEvent(timeOut);
+                this.querySelector(".notification").classList.remove("is-hidden");
             }else{
                 this.update()
             }
@@ -111,52 +115,50 @@ export class CountdownTimer extends AppElement {
                 seconds:0
             }
             this.render();
+            //this.querySelector(".notification").classList.remove("is-hidden");
         }
     }
 
     render(){
         this.innerHTML =  /* html */`
-            <div ${this.getClasses(["content"], this.state.classList)}>
-                ${this.state.title?.text[this.state.context.lang]!=undefined?`
-                <h1 ${this.getClasses([], this.state.title?.classList)} ${this.setAnimation(this.state.title?.animation)}>${this.state.title.text[this.state.context.lang]}</h1>`:``}
-                ${this.state.subtitle?.text[this.state.context.lang]!=undefined?`
-                <h2 ${this.getClasses([], this.state.subtitle?.classList)} ${this.setAnimation(this.state.title?.animation)}>${this.state.subtitle.text[this.state.context.lang]}</h2>`:``}
-                ${this.state.description?.text[this.state.context.lang]!=undefined?`
-                <p ${this.getClasses([], this.state.description?.classList)} ${this.setAnimation(this.state.title?.animation)}>${this.state.description.text[this.state.context.lang]}</p>`:``}
-            </div>
-            <div class="columns is-centered">
-                <div class="column is-4">
-                    <div class="level is-mobile" ${this.setAnimation(this.state.animation)}>
-                        <div class="level-item has-text-centered">
-                            <div>
-                            <p class="title">${this.state.count?.days===undefined?0:this.state.count.days}</p>
-                            <p class="heading">${this.state.days?.text[this.state.context.lang]!=undefined?this.state.days.text[this.state.context.lang]:`days`}</p>
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+            <div class="container">
+                ${this.getTitles()}
+                <div class="columns is-centered">
+                    <div class="column is-4">
+                        <div class="level is-mobile" ${this.setAnimation(this.state.animation)}>
+                            <div class="level-item has-text-centered">
+                                <div>
+                                <p class="title">${this.state.count?.days===undefined?0:this.state.count.days}</p>
+                                <p class="heading">${this.state.days?.text[this.state.context.lang]!=undefined?this.state.days.text[this.state.context.lang]:`days`}</p>
+                                </div>
+                            </div>
+                            <div class="level-item has-text-centered">
+                                <div>
+                                <p class="title">${this.state.count?.hours===undefined?0:this.state.count.hours}</p>
+                                <p class="heading">${this.state.hours?.text[this.state.context.lang]!=undefined?this.state.hours.text[this.state.context.lang]:`hours`}</p>
+                                </div>
+                            </div>
+                            <div class="level-item has-text-centered">
+                                <div>
+                                <p class="title">${this.state.count?.minutes===undefined?0:this.state.count.minutes}</p>
+                                <p class="heading">${this.state.minutes?.text[this.state.context.lang]!=undefined?this.state.minutes.text[this.state.context.lang]:`minutes`}</p>
+                                </div>
+                            </div>
+                            <div class="level-item has-text-centered">
+                                <div>
+                                <p class="title" >${this.state.count?.seconds===undefined?0:this.state.count.seconds}</p>
+                                <p class="heading">${this.state.seconds?.text[this.state.context.lang]!=undefined?this.state.seconds.text[this.state.context.lang]:`seconds`}</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                            <p class="title">${this.state.count?.hours===undefined?0:this.state.count.hours}</p>
-                            <p class="heading">${this.state.hours?.text[this.state.context.lang]!=undefined?this.state.hours.text[this.state.context.lang]:`hours`}</p>
-                            </div>
+                        <div  ${this.getClasses(["notification", "has-text-centered", "is-hidden"], this.state.message?.classList)} ${this.setAnimation(this.state.message.animation)}>
+                            ${this.state.message.text[this.state.context.lang]}
                         </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                            <p class="title">${this.state.count?.minutes===undefined?0:this.state.count.minutes}</p>
-                            <p class="heading">${this.state.minutes?.text[this.state.context.lang]!=undefined?this.state.minutes.text[this.state.context.lang]:`minutes`}</p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                            <p class="title" >${this.state.count?.seconds===undefined?0:this.state.count.seconds}</p>
-                            <p class="heading">${this.state.seconds?.text[this.state.context.lang]!=undefined?this.state.seconds.text[this.state.context.lang]:`seconds`}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="notification has-text-centered ${this.state.message.color} ${this.state.value==='timedOut'?'':'is-hidden'}" ${this.setAnimation(this.state.message.animation)}>
-                        ${this.state.message.text[this.state.context.lang]}
                     </div>
                 </div>
             </div>
+        </section>
         `    }
 
 }

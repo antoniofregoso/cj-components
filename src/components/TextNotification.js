@@ -4,8 +4,16 @@ import { Remarkable } from "remarkable";
 
 export class TextNotification extends AppElement {
 
+  #default = {
+    context:{
+            lang:"en"
+    }
+  }
+
     constructor(props={}){
         super();
+        this.eventName = "user:click-text-notification";
+        this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.md = new Remarkable();
     }
@@ -20,13 +28,10 @@ export class TextNotification extends AppElement {
 
       handleEvent(event){
         if (event.type === "click") {
-            let eventName;
-            if(this.state.eventName===undefined){
-              eventName = "user:click-text-notification"
-            }else {
-              eventName = this.state.buttons.eventName
-            }
-            const clickFunnel = new CustomEvent(eventName,{
+            if(this.state.buttons?.eventName!=undefined){
+              this.eventName = this.state.buttons.eventName
+          }
+            const clickFunnel = new CustomEvent(this.eventName,{
             detail:{source:event.target.id},
             bubbles: true,
             composed: true
@@ -38,12 +43,14 @@ export class TextNotification extends AppElement {
 
     render(){
       this.innerHTML =  /* html */`
-      <div class="container">
-          <div ${this.getClasses(["notification"], this.state.classList)} ${this.setAnimation(this.state?.animation)}>
-          <button class="delete"></button>
-          ${this.md.render(this.state?.text[this.state.context.lang])}
-          </div>
-      </div>
+      <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+        <div class="container">
+            <div ${this.getClasses(["notification"], this.state.classList)} ${this.setAnimation(this.state?.animation)}>
+            <button class="delete"></button>
+            ${this.md.render(this.state.message?.text[this.state.context.lang])}
+            </div>
+        </div>
+      </section>
       `;
       this.addEvents();
   }

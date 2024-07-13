@@ -3,9 +3,16 @@ import { Remarkable } from "remarkable";
 
 
 export class TextAccordion extends AppElement {
+    
+    #default = {
+        context:{
+            lang:"en"
+        }  
+    }
 
     constructor(props={}){
         super();
+        this.eventName = "user:click-text-accordion";
         this.md = new Remarkable();
     }
 
@@ -20,13 +27,10 @@ export class TextAccordion extends AppElement {
     handleEvent(event){
         if (event.type === "click") {
             if (event.target.tagName==='BUTTON'){
-                let eventName;
-                if(this.state.buttons.eventName===undefined){
-                  eventName = "user:click-text-accordion"
-                }else {
-                  eventName = this.state.buttons.eventName
+                if(this.state.buttons.eventName!=undefined){                 
+                  this.eventName = this.state.buttons.eventName
                 }
-                const clickFunnel = new CustomEvent(eventName,{
+                const clickFunnel = new CustomEvent(this.eventName,{
                 detail:{source:event.target.id},
                 bubbles: true,
                 composed: true
@@ -103,13 +107,15 @@ export class TextAccordion extends AppElement {
 
     render(){
         this.innerHTML =  /* html */`
-        <div class="container py-4">
-            ${this.getTitles()}
-            <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
-                ${this.#getItems()}
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+            <div class="container py-4">
+                ${this.getTitles()}
+                <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
+                    ${this.#getItems()}
+                </div>
+                ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
             </div>
-            ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
-        </div>
+        </section>
         `
         this.#SetAnimation()
         this.addEvents();

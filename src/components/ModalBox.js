@@ -4,6 +4,9 @@ import { Remarkable } from "remarkable";
 export class ModalBox extends AppElement {
 
     #default = {
+        context:{
+          lang:"en"
+      }
         };
 
     constructor(props={}){
