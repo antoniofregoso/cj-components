@@ -32,7 +32,7 @@ attributeChangedCallback(name, old, now) {
 handleEvent(event) {
         if (event.type === "click") {
             if (event.target.tagName==='BUTTON'){
-              if(this.state.buttons.eventName!=undefined){
+              if(this.state.buttons?.eventName!=undefined){
                 this.eventName = this.state.buttons.eventName             
               }
               const clickFunnel = new CustomEvent(this.eventName,{

@@ -41,11 +41,11 @@ export class MediaList extends AppElement {
 
     #mediaObject(props) {
       return /*hrml*/`
-    <article ${this.getClasses(["media"], props?.classList)}  ${this.setAnimation(props?.animation)}>
-    ${props.imgSrc!=undefined?`
+    <article ${this.getClasses(["media"], this.state.mediaObjects?.classList)}  ${this.setAnimation(this.state.mediaObjects?.animation)}>
+    ${props.imageL?.src!=undefined?`
       <figure class="media-left">
       <p class="image is-64x64">
-      <img src="${props.imgSrc}">
+      <img src="${props.imageL.src}">
       </p>
       </figure>`:''}
       <div class="media-content">
@@ -56,11 +56,16 @@ export class MediaList extends AppElement {
           </p>
         </div>
       </div>
+      ${props.imageR?.src!=undefined?`
+        <figure class="media-right">
+        <p class="image is-64x64">
+        <img src="${props.imageR.src}">
+        </p>
+        </figure>`:''}
     </article>
     `};
 
     #getItems(){
-      console.log('Puto',this.state.mediaObjects?.items)
       let items = '';
       if (this.state.mediaObjects?.items!=undefined){
         this.state.mediaObjects?.items.forEach(el=>{
@@ -76,7 +81,7 @@ export class MediaList extends AppElement {
             <div class="container my-4">
                 ${this.getTitles()}
                 <div class="columns is-centered">
-                    <div ${this.getClasses(["column"], this.state.mediaObjects?.classList)}>
+                    <div ${this.getClasses(["column"], [this.state.mediaObjects?.width])}>
                       ${this.#getItems()}
                       ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
                     </div>

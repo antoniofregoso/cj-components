@@ -1,8 +1,9 @@
 import { AppElement } from "@buyerjourney/bj-core";
+import { Remarkable } from "remarkable";
 
 export class CardsList extends AppElement {
     #default = {
-        cardsWidth:4,
+        cardsWidth:"is-4",
         context:{
             lang:"en"
         }
@@ -10,18 +11,22 @@ export class CardsList extends AppElement {
 
     constructor(props={}){
         super();
+        this.eventName = "user:click-cards-list";
         this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+        this.md = new Remarkable();
     }
+
+   
 
     #card(props){
         let card = /* html */ `
-        <div class="column is-${this.state.cardsWidth}">
-            <div class="card"  ${this.setAnimation(props.animation)}>                
-                ${props.header?.title!=undefined?
-                    `<header ${this.getClasses(["card-header"], props.header.classList)}>
-                    <p ${this.getClasses(["card-header-title"], props.header.title.classList)} ${this.setAnimation(props.header.title.animation)}>
-                    ${props.header.title.text[this.state.context.lang]}
+        <div class="column ${this.state.cardsWidth}">
+            <div ${this.getClasses(["card"], props.classList)}  ${this.setAnimation(props.animation)}>                
+                ${props.header?.text!=undefined?
+                    `<header ${this.getClasses(["card-header"], props.header?.classList)} ${this.setAnimation(props.header?.animation)}>
+                    <p class="card-header-title" >
+                    ${props.header.text[this.state.context.lang]}
                     </p>
                 </header>`:''}
                 ${props.image?.src!=undefined?
@@ -32,23 +37,24 @@ export class CardsList extends AppElement {
                     </div>`
                     :''
                 }
-                ${props.content!=undefined?`<div ${this.getClasses(["card-content"], props.content.classList)} ${this.setAnimation(props.content.animation)}>
-                        ${props.content.title!=undefined?`
+                ${props.content!=undefined?`
+                    <div ${this.getClasses(["card-content"], props.content.classList)} ${this.setAnimation(props.content.animation)}>
+                        ${props.content.title?.text[this.state.context.lang]!=undefined?`
                         <p ${this.getClasses(["title"], props.content.title.classList)}  ${this.setAnimation(props.content.title.animation)}>
                         ${props.content.title.text[this.state.context.lang]}
                         </p>`:''}
-                        ${props.content.subtitle!=undefined?`
+                        ${props.content.subtitle?.text[this.state.context.lang]!=undefined?`
                         <p ${this.getClasses(["subtitle"], props.content.subtitle.classList)} ${props.content?.subtitle?.classList!= undefined?props.content.subtitle.classList:''}" ${this.setAnimation(props.content.subtitle.animation)}>
                         ${props.content.subtitle.text[this.state.context.lang]}
                         </p>`:''}
-                        ${props.content.content!=undefined?`
-                        <div ${this.getClasses(["content"], props.content.content.classList)}  ${props.content?.content?.classList!= undefined?props.content.content.classList:''}" ${this.setAnimation(props.content.content.animation)}>
-                        ${props.content.content.text[this.state.context.lang]}
+                        ${props.content.description?.text[this.state.context.lang]!=undefined?`
+                        <div ${this.getClasses(["content"], props.content.description?.classList)}  ${props.content.description?.classList!= undefined?props.content.description?.classList:''}" ${this.setAnimation(props.content.description?.animation)}>
+                        ${this.md.render(props.content.description.text[this.state.context.lang])}
                         </div>`:''}
                     `:''}
                 ${props.content!=undefined?
                     `</div>`:''}
-                ${props.footer?.buttons!=undefined?`<footer ${this.getClasses(["card-footer"], props.footer.classList)} >
+                ${props.footer?.buttons!=undefined?`<footer ${this.getClasses(["card-footer"], props.footer.classList)} ${this.setAnimation(props.footer.animation)}>
                     ${this.#getFooter(props.footer.buttons)}
                 </footer>`:''}
             </div>
@@ -61,9 +67,9 @@ export class CardsList extends AppElement {
         if(props!=undefined){
             let render = '';
             Object.entries(props).forEach(([key, value])=>{                
-                render += `<a class="card-footer-item" href="${props[key]['href']}"  ${this.setAnimation(props[key]['animation'])}>
+                render += `<button class="card-footer-item"  id="${props[key]['id']}" ${this.setAnimation(props[key]['animation'])}>
                     ${props[key]['text'][this.state.context.lang]}
-                </a>`;
+                </button>`;
             });
             return render;
         }else return '';
@@ -79,29 +85,16 @@ export class CardsList extends AppElement {
         return cardsHtml;
     }
 
-    handleEvent(event) {
-        if (event.type === "click") {
-            let eventName;
-            if(this.state.eventName===undefined){
-              eventName = "user:click-card"
-            }else {
-              eventName = this.state.eventName
-            }
-            const clickFunnel = new CustomEvent(eventName,{
-            detail:{source:event.target.id},
-            bubbles: true,
-            composed: true
-        });
-        this.dispatchEvent(clickFunnel);
-        }
-    }
+   
 
     render(){
         this.innerHTML =  /* html */`
-        <div ${this.getClasses(["section"], this.state.classList)}>
-            ${this.getTitles(this.state)}
-            <div class="columns is-multiline mx-4">
-                ${this.#getCards()}
+       <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+            <div class="container py-4">
+                ${this.getTitles(this.state)}
+                <div class="columns is-multiline mx-4">
+                    ${this.#getCards()}
+                </div>
             </div>
         </div>`
         this.addEvents();

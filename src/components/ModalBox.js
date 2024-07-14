@@ -11,6 +11,7 @@ export class ModalBox extends AppElement {
 
     constructor(props={}){
         super();
+        this.eventName = "user:click-modal-box";
         this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.md = new Remarkable();
@@ -35,11 +36,11 @@ export class ModalBox extends AppElement {
         }
     }
 
-    #image(props){
+    #image(){
         return /*HTML*/ `
         <div class="modal-content">
-            <p ${this.getClasses(["image"], props?.classList)}>
-                <img src="${props.src!=undefined?props.src:''}" alt="${props.alt!=undefined?props.alt:''}">
+            <p ${this.getClasses(["image"], this.state.image?.classList)} ${this.setAnimation(this.state.image?.animation)}>
+                <img src="${ this.state.image.src!=undefined? this.state.image.src:''}" alt="${ this.state.image.alt!=undefined? this.state.image.alt:''}">
             </p>
         </div>          
         <button class="modal-close is-large" aria-label="close"></button>    
@@ -84,19 +85,17 @@ export class ModalBox extends AppElement {
         `
     }
 
-    #getContent(props){
-        let content = '';
-        if (this.state.notification!=undefined){
-            content = this.#notification(this.state.notification);
+    #getContent(){
+        if (this.state.image?.src!=undefined){
+            return this.#image();
         }
-        return content
     }
 
     render(){
         this.innerHTML =  /* html */`
-        <div class="modal">
+        <div class="modal is-active">
             <div class="modal-background"></div>
-                ${this.#getContent(this.state)}
+                ${this.#getContent()}
         </div>
         `;
         this.addEvents();

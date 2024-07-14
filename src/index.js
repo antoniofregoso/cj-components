@@ -6,6 +6,7 @@ export * from './components/imageBanner';
 export * from './components/ImageText';
 export * from './components/LevelCentered';
 export * from './components/MediaList';
+export * from './components/ModalBox';
 export * from './components/OmnichannelChat';
 export * from './components/StepsComponent';
 export * from './components/TextAccordion';
