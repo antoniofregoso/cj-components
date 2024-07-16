@@ -31,6 +31,7 @@ export class ModalBox extends AppElement {
         if (event.type === "click") {
             if (event.target.ariaLabel==='close'){
                 this.querySelector(".modal").classList.remove("is-active");
+                this.removeAttribute('active');
             }
             
         }
@@ -47,53 +48,51 @@ export class ModalBox extends AppElement {
         `
     }
 
-    #card(props){
+    #card(){
         return /*HTML*/`
-        <div class="modal-card">
-            <header class="modal-card-head">
-            <p class="modal-card-title">Modal title</p>
-            <button class="delete" aria-label="close"></button>
+        <div  ${this.getClasses(["modal-card"], this.state.card?.classList)} ${this.setAnimation(this.state.card.animation)}>
+            <header ${this.getClasses(["modal-card-head"], this.state.card.title?.classList)} ${this.setAnimation(this.state.card.title?.animation)}>          
+                ${this.state.card.title?.text[this.state.context.lang]!=undefined?`<p class="modal-card-title">${this.state.card.title.text[this.state.context.lang]}</p>`:``}
+                <button class="delete" aria-label="close"></button>
             </header>
-            <section class="modal-card-body">
-            <!-- Content ... -->
+            <section ${this.getClasses(["modal-card-body"], this.state.card.content?.classList)} ${this.setAnimation(this.state.card.content?.animation)}>          
+                <div class="content">
+                   ${this.state.card.content?.text[this.state.context.lang]?this.md.render(this.state.card.content.text[this.state.context.lang]):''}
+                </div>
             </section>
-            <footer class="modal-card-foot">
-            <div class="buttons">
-                <button class="button is-success">Save changes</button>
-                <button class="button">Cancel</button>
-            </div>
-            </footer>
         </div>
         `
     }
 
-    #notification(props) {
+    #message() {
         return /*HTML*/`
         <div class="modal-content">
-            <div ${this.getClasses(["message"], props.classList)}>
-                ${props.header?.text[this.state.context.lang]!=undefined?`
+           <article  ${this.getClasses(["message"], this.state.message?.classList)} ${this.setAnimation(this.state.message?.animation)}>          
                 <div class="message-header">
-                <p>${props.header?.text[this.state.context.lang]}</p>
-                <button class="delete" aria-label="close"></button>
-            </div>
-                `:``}               
-                <div class="message-body">
-                ${props.body?.text[this.state.context.lang]!=undefined?this.md.render(props.body?.text[this.state.context.lang]):''}
+                    <p>${this.md.render(this.state.message.header?.text[this.state.context.lang])}</p>
+                    <button class="delete" aria-label="close"></button>
                 </div>
-            </div>
+                <div class="message-body">
+                    ${this.md.render(this.state.message.body?.text[this.state.context.lang])}
+                </div>
+            </article>
         </div>
         `
     }
 
     #getContent(){
-        if (this.state.image?.src!=undefined){
+        if (this.state.image!=undefined){
             return this.#image();
-        }
+        }else if (this.state.card!=undefined){
+            return this.#card();
+        }else if(this.state.message!=undefined){
+            return this.#message();
+        }else return console.error('There is no content to display')
     }
 
     render(){
         this.innerHTML =  /* html */`
-        <div class="modal is-active">
+        <div class="modal">
             <div class="modal-background"></div>
                 ${this.#getContent()}
         </div>

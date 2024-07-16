@@ -8,10 +8,35 @@ export class WebinarInvitation extends AppElement {
     #default = {
         startsOn:{
             iCal:{
-                "text":{
+                text:{
                     en:"Add to Calendar",
                     es:"Añadir al Calendario",
                     fr:"Ajouter au Calendrier"
+                }
+            },
+            title:{
+                text:{
+                    en:"STARTS ON",
+                    es:"COMIENZA EL",
+                    fr:"COMMENCE LE"
+                }
+            }
+        },
+        duration:{
+            title:{
+                text:{
+                    en:"DURATION",
+                    es:"DURACIÓN",
+                    fr:"DURÉE"
+                }
+            }
+        },
+        programFee:{
+            title:{
+                text:{
+                    en:"PROGRAM FEE",
+                    es:"TARIFA DEL PROGRAMA",
+                    fr:"TARIFA DEL PROGRAMA"
                 }
             }
         },
@@ -135,17 +160,17 @@ export class WebinarInvitation extends AppElement {
             <div class="container">
                 <div class="columns">
                     <div class="column">
-                        <div class="media">
+                        <div class="media" ${this.setAnimation(this.state.startsOn.animation)}>
                             <div class="media-left">
                             <span class="icon is-size-2 ">
                                     ${icon(faCalendarCheck ).html[0]}
                                 </span>
                             </div>
                             <div class="media-content">
-                            <h2 class="is-size-4">STARTS ON</h2>
+                            <h2 class="is-size-4">${this.state.startsOn.title?.text[this.state.context.lang]}</h2>
                                 <div class="content">
                                     <h3>${this.getDate()}</h3>
-                                    <button class="button is-small" id="ical-request">
+                                    <button class="button" id="ical-request">
                                         <span class="icon is-small">${icon(faCalendarPlus).html[0]}</span>
                                         <span>${this.state.startsOn.iCal?.text[this.state.context.lang]}</span>
                                     </button>
@@ -154,14 +179,14 @@ export class WebinarInvitation extends AppElement {
                         </div>
                     </div>
                     <div class="column">
-                        <div class="media">
+                        <div class="media" ${this.setAnimation(this.state.duration.animation)}>
                             <div class="media-left">
                                 <span class="icon is-size-2 ">
                                     ${icon(faClock ).html[0]}
                                 </span>
                             </div>
-                            <div class="media-content">
-                            <h1 class="is-size-4">DURATION</h1>
+                            <div class="media-content ">
+                            <h1 class="is-size-4">${this.state.duration.title?.text[this.state.context.lang]}</h1>
                                 <div class="content">
                                     ${this.state.duration?.text[this.state.context.lang]!=undefined?this.md.render(this.state.duration?.text[this.state.context.lang]):''}
                                 </div>
@@ -169,14 +194,14 @@ export class WebinarInvitation extends AppElement {
                         </div>
                     </div>
                     <div class="column">
-                        <div class="media">
+                        <div class="media" ${this.setAnimation(this.state.programFee.animation)}>
                             <div class="media-left">
                             <span class="icon is-size-2 ">
                                     ${icon(faCreditCard ).html[0]}
                                 </span>
                             </div>
                             <div class="media-content">
-                            <h1 class="is-size-4">PROGRAM FEE</h1>
+                            <h1 class="is-size-4">${this.state.programFee.title?.text[this.state.context.lang]}</h1>
                                 <div class="content">
                                     ${this.state.programFee?.price!=undefined?`<h3>${this.state.programFee.price}</h3>`:''}
                                     ${this.state.programFee?.text[this.state.context.lang]!=undefined?this.md.render(this.state.programFee?.text[this.state.context.lang]):''}

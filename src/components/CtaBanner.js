@@ -34,8 +34,8 @@ export class CtaBanner extends AppElement {
       <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
             <div class="container py-4">
               <div class="columns is-vcentered">
-                <div class="column">
-                   <div ${this.getClasses(["content"], this.state.content?.classList)}>
+                <div class="column ${this.state.content?.size!=undefined?this.state.content.size:'is-6'}">
+                   <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
                    ${this.state.content?.text[this.state.context.lang]!=undefined?this.md.render(this.state.content.text[this.state.context.lang]):""}
                     </div>
                 </div>

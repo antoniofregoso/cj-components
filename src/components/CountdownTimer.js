@@ -115,7 +115,7 @@ export class CountdownTimer extends AppElement {
                 seconds:0
             }
             this.render();
-            //this.querySelector(".notification").classList.remove("is-hidden");
+            this.querySelector(".notification").classList.remove("is-hidden");
         }
     }
 

@@ -37,12 +37,12 @@ export class LevelCentered extends AppElement {
         let itemsHtml = ``;
         if (this.state.items?.length>0){
             this.state.items.forEach(item=>{
-            itemsHtml+= /* html */`
-            <div class="section  py-2 ">            
-                <nav class="level-item has-text-centered ">
+            itemsHtml+= /* html */`         
+                <div class="level-item has-text-centered">
                     <div>
                         ${item.icon?.name!=undefined?`
-                            <div ${this.getClasses(["icon", "title"], item.icon?.classList)} ${this.setAnimation(item.icon?.animation)}>
+                            <div ${this.getClasses(["icon", "title"], item.icon?.classList)} 
+                                ${this.setAnimation(item.icon?.animation)}>
                                 ${this.#getIcon(item.icon.prefix,item.icon.name)}
                             </div>                    
                             `:''}                    
@@ -51,12 +51,11 @@ export class LevelCentered extends AppElement {
                             ${item.heading?.text[this.state.context.lang]!=undefined?item.heading.text[this.state.context.lang]:''}
                         </p>
                         <p ${this.getClasses(["title"], item.title?.classList)}
-                        ${this.setAnimation(item.title?.animation)}>
+                            ${this.setAnimation(item.title?.animation)}>
                             ${item.title?.text[this.state.context.lang]!=undefined?item.title.text[this.state.context.lang]:''}
                         </p>
                     </div>
-                </nav>
-            </div>`;
+                </div>`;
         });
         }
         
@@ -93,7 +92,7 @@ export class LevelCentered extends AppElement {
 
     render(){
         this.innerHTML =  /* html */`
-        <nav ${this.getClasses(["level"], this.state?.classList)}>
+        <nav ${this.getClasses(["level"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
             ${this.#getItems()}
         </nav>
         `

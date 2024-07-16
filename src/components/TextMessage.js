@@ -46,7 +46,7 @@ export class TextMessage extends AppElement {
         <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
             <div class="container my-4">
                 <div class="columns is-centered">
-                    <div class="column is-4">
+                    <div class="column ${this.state?.size!=undefined?this.state.size:'is-4'}">
                         <div ${this.getClasses(["message"], this.state.classList)} ${this.setAnimation(this.state?.animation)}>
                             <div class="message-header">
                                 <p>${this.md.render(this.state.header?.text[this.state.context.lang])}</p>
