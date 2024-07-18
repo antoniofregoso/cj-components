@@ -3,8 +3,6 @@ import { AppElement } from "@buyerjourney/bj-core";
 export class CountdownTimer extends AppElement {
 
     #default = {
-        withContainer:true,
-        value:"running",
         count:{
             days:0,
             hours:0,
@@ -86,7 +84,8 @@ export class CountdownTimer extends AppElement {
     }
 
     start(){
-        if (this.timeRemaining > 0){
+        if (this.timeRemaining > 0){        
+        this.setAttribute("value","running");
         let intervalId = setInterval(() => {
             let eventName;
             this.timeRemaining-=1000;
@@ -114,8 +113,8 @@ export class CountdownTimer extends AppElement {
                 minutes:0,
                 seconds:0
             }
+            this.setAttribute("value","stopped");  
             this.render();
-            this.querySelector(".notification").classList.remove("is-hidden");
         }
     }
 
@@ -159,8 +158,12 @@ export class CountdownTimer extends AppElement {
                 </div>
             </div>
         </section>
-        `    }
-
+        `
+        if(this.getAttribute('value')==='stopped'){
+            this.querySelector(".notification").classList.remove("is-hidden");
+        }
+    }
+        
 }
 
 customElements.define("countdown-timer", CountdownTimer)

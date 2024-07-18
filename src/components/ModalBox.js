@@ -87,7 +87,7 @@ export class ModalBox extends AppElement {
             return this.#card();
         }else if(this.state.message!=undefined){
             return this.#message();
-        }else return console.error('There is no content to display')
+        }else return '<p>There is no content to display</p>'
     }
 
     render(){

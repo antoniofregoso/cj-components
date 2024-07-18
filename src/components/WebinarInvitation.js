@@ -7,13 +7,6 @@ export class WebinarInvitation extends AppElement {
 
     #default = {
         startsOn:{
-            iCal:{
-                text:{
-                    en:"Add to Calendar",
-                    es:"Añadir al Calendario",
-                    fr:"Ajouter au Calendrier"
-                }
-            },
             title:{
                 text:{
                     en:"STARTS ON",
@@ -40,8 +33,15 @@ export class WebinarInvitation extends AppElement {
                 }
             }
         },
+        iCal:{
+            text:{
+                en:"Add to Calendar",
+                es:"Añadir al Calendario",
+                fr:"Ajouter au Calendrier"
+            }
+        },
         context:{
-            lang:"eng"
+            lang:"en"
         }
     }
 
@@ -96,7 +96,6 @@ export class WebinarInvitation extends AppElement {
                 optionsDate.hour12 = true;
             }
             let date = new Date(this.state.startsOn.date);
-            console.log(this.state.context.lang, optionsDate)
             let webinarDate = date.toLocaleString(this.state.context.lang, optionsDate);
             return webinarDate
         }
@@ -154,7 +153,8 @@ export class WebinarInvitation extends AppElement {
 
     }
 
-    render(){this.innerHTML =  /* html */`
+    render(){
+    this.innerHTML =  /* html */`
     <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
         <div class="section py-2">
             <div class="container">
@@ -170,9 +170,9 @@ export class WebinarInvitation extends AppElement {
                             <h2 class="is-size-4">${this.state.startsOn.title?.text[this.state.context.lang]}</h2>
                                 <div class="content">
                                     <h3>${this.getDate()}</h3>
-                                    <button class="button" id="ical-request">
+                                    <button  ${this.getClasses(["button"], this.state.iCal?.classList)} id="ical-request">
                                         <span class="icon is-small">${icon(faCalendarPlus).html[0]}</span>
-                                        <span>${this.state.startsOn.iCal?.text[this.state.context.lang]}</span>
+                                        <span>${this.state.iCal?.text[this.state.context.lang]}</span>
                                     </button>
                                 </div>
                             </div>
@@ -188,7 +188,7 @@ export class WebinarInvitation extends AppElement {
                             <div class="media-content ">
                             <h1 class="is-size-4">${this.state.duration.title?.text[this.state.context.lang]}</h1>
                                 <div class="content">
-                                    ${this.state.duration?.text[this.state.context.lang]!=undefined?this.md.render(this.state.duration?.text[this.state.context.lang]):''}
+                                    ${this.state.duration?.text?.[this.state.context.lang]!=undefined?this.md.render(this.state.duration.text[this.state.context.lang]):''}
                                 </div>
                             </div>
                         </div>
@@ -204,7 +204,7 @@ export class WebinarInvitation extends AppElement {
                             <h1 class="is-size-4">${this.state.programFee.title?.text[this.state.context.lang]}</h1>
                                 <div class="content">
                                     ${this.state.programFee?.price!=undefined?`<h3>${this.state.programFee.price}</h3>`:''}
-                                    ${this.state.programFee?.text[this.state.context.lang]!=undefined?this.md.render(this.state.programFee?.text[this.state.context.lang]):''}
+                                    ${this.state.programFee?.text?.[this.state.context.lang]!=undefined?this.md.render(this.state.programFee?.text[this.state.context.lang]):''}
                                 </div>
                             </div>
                         </div>
