@@ -58,7 +58,7 @@ export class CountdownTimer extends AppElement {
         this.start()
     }
 
-    #getStart(dateString){
+    #getStart(){
         try {
             let dueDate = new Date(this.getAttribute("start"));
             return dueDate;
