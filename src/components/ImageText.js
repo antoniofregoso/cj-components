@@ -68,7 +68,7 @@ export class ImageText extends AppElement {
         </div>
             `
         this.innerHTML =  /* html */`
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="columns is-vcentered is-gapless my-0"> 
                 ${this.state.imagePosition==='right'?text:img}
                 ${this.state.imagePosition==='right'?img:text}

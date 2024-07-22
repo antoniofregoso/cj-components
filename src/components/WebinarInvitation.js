@@ -155,7 +155,7 @@ export class WebinarInvitation extends AppElement {
 
     render(){
     this.innerHTML =  /* html */`
-    <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+    <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
         <div class="section py-2">
             <div class="container">
                 <div class="columns">

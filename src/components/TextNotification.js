@@ -43,7 +43,7 @@ export class TextNotification extends AppElement {
 
     render(){
       this.innerHTML =  /* html */`
-      <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+      <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
         <div class="container">
             <div ${this.getClasses(["notification"], this.state.classList)} ${this.setAnimation(this.state?.animation)}>
             <button class="delete"></button>

@@ -92,7 +92,7 @@ export class LevelCentered extends AppElement {
 
     render(){
         this.innerHTML =  /* html */`
-        <nav ${this.getClasses(["level"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+        <nav ${this.getClasses(["level"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             ${this.#getItems()}
         </nav>
         `

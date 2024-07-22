@@ -62,7 +62,7 @@ export class VideoPlayer extends AppElement {
 
     render(){
         this.innerHTML=/* html */`
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container p-4 ">
                 ${this.getTitles()}
                 <div class="columns is-centered">

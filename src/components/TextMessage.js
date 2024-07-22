@@ -43,7 +43,7 @@ export class TextMessage extends AppElement {
 
     render(){
     	this.innerHTML =  /* html */`
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)}>
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container my-4">
                 <div class="columns is-centered">
                     <div class="column ${this.state?.size!=undefined?this.state.size:'is-4'}">
