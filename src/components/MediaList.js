@@ -41,7 +41,7 @@ export class MediaList extends AppElement {
 
     #mediaObject(props) {
       return /*hrml*/`
-    <article ${this.getClasses(["media"], this.state.mediaObjects?.classList)}  ${this.setAnimation(this.state.mediaObjects?.animation)}>
+    <article ${this.getClasses(["media", "pt-4"], this.state.mediaObjects?.classList)}  ${this.setAnimation(this.state.mediaObjects?.animation)}>
     ${props.imageL?.src!=undefined?`
       <figure class="media-left">
       <p class="image is-64x64">

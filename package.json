@@ -1,6 +1,6 @@
 {
   "name": "@buyerjourney/bj-components",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "",
   "main": "scr/index.js",
   "module": "src/index.js",
