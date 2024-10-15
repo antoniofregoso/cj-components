@@ -2,7 +2,7 @@ export * from './components/CardsList';
 export * from './components/CtaBanner';
 export * from './components/CountdownTimer';
 export * from './components/HeroBanner';
-export * from './components/imageBanner';
+export * from './components/ImageBanner';
 export * from './components/ImageText';
 export * from './components/LevelCentered';
 export * from './components/MediaList';
