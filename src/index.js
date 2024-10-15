@@ -12,6 +12,6 @@ export * from './components/TextAccordion';
 export * from './components/TextColumns';
 export * from './components/TextMessage';
 export * from './components/TextNotification';
-export * from "./components/TextSection";
+export * from './components/TextSection';
 export * from './components/VideoPlayer';
 export * from './components/WebinarInvitation';
