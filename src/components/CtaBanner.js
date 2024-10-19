@@ -25,9 +25,6 @@ export class CtaBanner extends AppElement {
         this.render()
       }
 
-    handleEvent(event){
-
-    }
 
     render(){
     	this.innerHTML =  /* html */`
