@@ -25,7 +25,8 @@ Basic components to generate sales funnels and touchpoints from the BuyerJourney
 
 ## Documentation 
 - [BuyerJourneyJS project](https://buyerjourney.ninja/).
-- [bj-components](https://buyerjourney.ninja/components).
+- [Getting Started](https://buyerjourney.ninja/get-started).
+- [bj Libraries](https://buyerjourney.ninja/libraries).
 - [Get started](https://buyerjourney.ninja/get-started).
 
 ## bj-core is made with
