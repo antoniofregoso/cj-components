@@ -1,4 +1,4 @@
-import { AppElement } from "@buyerjourney/bj-core";
+import { AppElement } from "@customerjourney/cj-core";
 
 export class CountdownTimer extends AppElement {
 

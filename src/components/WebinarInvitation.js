@@ -1,4 +1,4 @@
-import { AppElement } from "@buyerjourney/bj-core";
+import { AppElement } from "@customerjourney/cj-core";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faClock, faCreditCard, faCalendarCheck, faCalendarPlus } from '@fortawesome/free-regular-svg-icons';
 import { Remarkable } from "remarkable";

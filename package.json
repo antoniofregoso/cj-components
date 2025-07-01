@@ -1,6 +1,6 @@
 {
-  "name": "@buyerjourney/bj-components",
-  "version": "0.9.3",
+  "name": "@customerjourney/bj-components",
+  "version": "1.9.3",
   "description": "",
   "main": "scr/index.js",
   "module": "src/index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antoniofregoso/bj-funnels.git"
+    "url": "git+https://github.com/antoniofregoso/cj-components.git"
   },
   "author": "Antonio Fregoso <antoniofregoso@protonmail.com>",
   "license": "GPL-3.0-or-later",
@@ -19,7 +19,7 @@
     "esbuild": "^0.19.4"
   },
   "dependencies": {
-    "@buyerjourney/bj-core": "^1.0.1",
+    "@customerjourney/bj-core": "^1.0.1",
     "animate.css": "^4.1.1",
     "bulma": "^1.0.0",
     "remarkable": "^2.0.1",
@@ -30,9 +30,9 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2"
   },
   "bugs": {
-    "url": "https://github.com/antoniofregoso/bj-core/issues"
+    "url": "https://github.com/antoniofregoso/cj-components/issues"
   },
-  "homepage": "https://buyerjourney.ninja/components",
+  "homepage": "https://customerjourney.ninja/documentation/components/",
   "keywords": [
     "vanilla-javascripts",
     "components",

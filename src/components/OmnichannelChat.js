@@ -1,5 +1,4 @@
-import { AppElement } from "@buyerjourney/bj-core";
-import { slugify } from "@buyerjourney/bj-core";
+import { AppElement, slugify } from "@customerjourney/cj-core";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faRobot, faCircleXmark, faCommentDots, faFaceSmile} from "@fortawesome/free-solid-svg-icons";
 import { faFacebookMessenger, faWhatsapp, faTelegram }  from '@fortawesome/free-brands-svg-icons';

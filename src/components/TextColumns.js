@@ -1,4 +1,4 @@
-import { AppElement } from "@buyerjourney/bj-core";
+import { AppElement } from "@customerjourney/cj-core";
 import { Remarkable } from "remarkable";
 
 
@@ -31,8 +31,8 @@ export class TextColumns extends AppElement {
 
     render(){
         this.innerHTML =  /* html */`
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
-            <div class="container py-4">
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.getBackground()}>
+            <div class="container py-4"  ${this.setAnimation(this.state.animation)}>
                 ${this.getTitles()}
                 <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
                 ${this.md.render(this.state.content?.text[this.state.context.lang])}

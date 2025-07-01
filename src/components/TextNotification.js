@@ -1,4 +1,4 @@
-import { AppElement } from "@buyerjourney/bj-core";
+import { AppElement } from "@customerjourney/cj-core";
 import { Remarkable } from "remarkable";
 
 

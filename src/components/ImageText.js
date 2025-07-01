@@ -1,5 +1,5 @@
-import { AppElement } from "@buyerjourney/bj-core";
-import SimpleParallax from "simple-parallax-js/vanilla";
+import { AppElement } from "@customerjourney/cj-core";
+import SimpleParallax from "simple-parallax-js";
 import { Remarkable } from "remarkable";
 
 export class ImageText extends AppElement {

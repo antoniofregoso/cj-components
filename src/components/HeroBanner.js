@@ -1,4 +1,4 @@
-import { AppElement } from "@buyerjourney/bj-core";
+import { AppElement } from "@customerjourney/cj-core";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { Remarkable } from "remarkable";
 import { faCircleArrowDown } from '@fortawesome/free-solid-svg-icons';

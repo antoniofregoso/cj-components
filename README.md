@@ -1,7 +1,5 @@
-# bj-components
-Basic components to generate sales funnels and touchpoints from the BuyerJourney.js project in javascript with a delicious vanilla flavor
-## Sponsors
-[<img src="https://www.conference.com.mx/web/image/website/3/logo/Conference?unique=cb769b7">](https://www.conference.com.mx/comercializacion-digital)
+# cj-components
+Basic components to generate sales funnels and touchpoints from the CustomerJourney.js project in javascript with a delicious vanilla flavor
 
 ## Components
 - CardsList
@@ -24,10 +22,9 @@ Basic components to generate sales funnels and touchpoints from the BuyerJourney
 - WebinarInvitation
 
 ## Documentation 
-- [BuyerJourneyJS project](https://buyerjourney.ninja/).
-- [Getting Started](https://buyerjourney.ninja/get-started).
-- [bj Libraries](https://buyerjourney.ninja/libraries).
-- [Get started](https://buyerjourney.ninja/get-started).
+- [CustomerJourneyJS project](https://buyerjourney.ninja/).
+- [Getting Started](https://customerjourney.ninja/getting-started/).
+- [cj Libraries](https://customerjourney.ninja/documentation/components/).
 
 ## bj-core is made with
 - [bulma](https://bulma.io/).
