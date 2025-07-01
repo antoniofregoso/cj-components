@@ -26,7 +26,7 @@ Basic components to generate sales funnels and touchpoints from the CustomerJour
 - [Getting Started](https://customerjourney.ninja/getting-started/).
 - [cj Libraries](https://customerjourney.ninja/documentation/components/).
 
-## bj-core is made with
+## cj-core is made with
 - [bulma](https://bulma.io/).
 - [Animate.css](https://animate.style/).
 - [remarkable](https://github.com/jonschlinkert/remarkable).
@@ -34,4 +34,4 @@ Basic components to generate sales funnels and touchpoints from the CustomerJour
 - [Font Awesome](https://fontawesome.com/).
 
 ## License
-bj-core is [GPL-3.0-or-later](./LICENSE).
+cj-core is [GPL-3.0-or-later](./LICENSE).
