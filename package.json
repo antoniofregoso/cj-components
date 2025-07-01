@@ -1,6 +1,6 @@
 {
   "name": "@customerjourney/bj-components",
-  "version": "1.9.3",
+  "version": "0.9.3",
   "description": "",
   "main": "scr/index.js",
   "module": "src/index.js",
