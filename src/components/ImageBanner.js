@@ -1,5 +1,5 @@
 import { AppElement } from "@customerjourney/cj-core";
-import SimpleParallax from "simple-parallax-js";
+import SimpleParallax from "simple-parallax-js/vanilla";
 import { Remarkable } from "remarkable";
 
 export class ImageBanner extends AppElement {
