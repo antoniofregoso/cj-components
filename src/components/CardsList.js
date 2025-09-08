@@ -6,6 +6,9 @@ export class CardsList extends AppElement {
         cardsWidth:"is-4",
         context:{
             lang:"en"
+        },
+        footer:{
+            eventName:"user:click-cards-list"
         }
     };
 
@@ -17,7 +20,19 @@ export class CardsList extends AppElement {
         this.md = new Remarkable();
     }
 
-   
+    registerExtraEvents() {
+        if (event.type === "click") {
+            if(this.state.footer?.eventName!=undefined){
+                this.eventName = this.state.footer.eventName
+            }
+            const clickFunnel = new CustomEvent(this.eventName,{
+            detail:{source:event.target.id},
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(clickFunnel);
+        }
+    }
 
     #card(props){
         let card = /* html */ `
@@ -66,13 +81,18 @@ export class CardsList extends AppElement {
     #getFooter(props){
         if(props!=undefined){
             let render = '';
-            Object.entries(props).forEach(([key, value])=>{                
-                render += `<button class="card-footer-item"  id="${props[key]['id']}" ${this.setAnimation(props[key]['animation'])}>
-                    ${props[key]['text'][this.state.context.lang]}
-                </button>`;
-            });
+            props.forEach(el => {
+                if (el.href!=undefined){
+                    render += `<a href="#" class="card-footer-item ${el.classList!=undefined?el.classList:''}">${el.text[this.state.context.lang]}</a>`
+                }else{
+                    render += `<button id="${el?.id}" class="card-footer-item button ${el.classList!=undefined?el.classList:''}" >${el.text[this.state.context.lang]}</button>`
+                }
+            })
+            
             return render;
-        }else return '';
+        }else{ 
+        return '';
+        }
     }
 
     #getCards(){        
