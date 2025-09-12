@@ -57,7 +57,7 @@ scrollDown(){
 
 
 
-#icon = icon(faCircleArrowDown, {classes: ['fa-3x',  this.state.scrollButton?.color!=undefined?this.state.scrollButton?.color!=undefined:'has-text-white']}).html[0];
+#icon = icon(faCircleArrowDown, {classes: ['fa-3x',  this.state.scrollButton?.color!=undefined?this.state.scrollButton.color:'has-text-white']}).html[0];
 
 
 render(){

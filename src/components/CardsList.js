@@ -45,8 +45,8 @@ export class CardsList extends AppElement {
                     </p>
                 </header>`:''}
                 ${props.image?.src!=undefined?
-                    `<div ${this.getClasses(["card-image"], props.image.classList)} ${this.setAnimation(props.image?.animation)}>
-                        <figure class="image is-4by3">
+                    `<div class="card-image" ${this.setAnimation(props.image?.animation)}>
+                        <figure ${this.getClasses(["image"], props.image.classList)} >
                             <img src="${props.image.src}" ${props.image.alt!=undefined?`alt="${props.image.alt[this.state.context.lang]}"`:''} >
                         </figure>
                     </div>`
@@ -83,7 +83,7 @@ export class CardsList extends AppElement {
             let render = '';
             props.forEach(el => {
                 if (el.href!=undefined){
-                    render += `<a href="#" class="card-footer-item ${el.classList!=undefined?el.classList:''}">${el.text[this.state.context.lang]}</a>`
+                    render += `<a href="${el.href}" class="card-footer-item ${el.classList!=undefined?el.classList:''}">${el.text[this.state.context.lang]}</a>`
                 }else{
                     render += `<button id="${el?.id}" class="card-footer-item button ${el.classList!=undefined?el.classList:''}" >${el.text[this.state.context.lang]}</button>`
                 }

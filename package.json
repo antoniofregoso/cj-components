@@ -1,6 +1,6 @@
 {
   "name": "@customerjourney/cj-components",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Component for the Customer Journey project, providing reusable UI elements for building touchpoints and funnels.",
   "main": "scr/index.js",
   "module": "src/index.js",
