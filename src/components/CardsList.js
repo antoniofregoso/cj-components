@@ -20,20 +20,6 @@ export class CardsList extends AppElement {
         this.md = new Remarkable();
     }
 
-    registerExtraEvents() {
-        if (event.type === "click") {
-            if(this.state.footer?.eventName!=undefined){
-                this.eventName = this.state.footer.eventName
-            }
-            const clickFunnel = new CustomEvent(this.eventName,{
-            detail:{source:event.target.id},
-            bubbles: true,
-            composed: true
-        });
-        this.dispatchEvent(clickFunnel);
-        }
-    }
-
     #card(props){
         let card = /* html */ `
         <div class="column ${this.state.cardsWidth}">
@@ -105,18 +91,16 @@ export class CardsList extends AppElement {
         return cardsHtml;
     }
 
-   
-
     render(){
         this.innerHTML =  /* html */`
-       <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container py-4">
                 ${this.getTitles(this.state)}
                 <div class="columns is-multiline mx-4">
                     ${this.#getCards()}
                 </div>
             </div>
-        </div>`
+        </section>`
         this.addEvents();
     }
 
