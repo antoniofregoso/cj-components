@@ -20,28 +20,21 @@ export class VideoPlayer extends AppElement {
         this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.md = new Remarkable();
-        this.state.videoSource = this.#detectVideoSource(this.state.video?.src);
     }
-
-    static get observedAttributes() {
-        return ["src"];
-      }
-      
-    attributeChangedCallback(name, old, now) {
-        console.log(name, old, now)
-        this.state.value = this.attribute2CamelCase(now);
-        this.render()
-      }
-
 
     #detectVideoSource(url){
         if (typeof url === 'string'){
             if (url.includes('vimeo')){
-                return 'vimeo'
-            }else if(url.includes('youtube')){
-                return 'youtube'
-            } else {
-                return 'not supported'
+                return 'vimeo';
+            }else if(url.includes('youtube.com/embed')){
+                return 'youtube';
+            }else if(url.includes('youtu.be')){
+                return 'youtu.be';
+            }else if(/\.(mp4|webm|ogg)(\?|$)/i.test(url)){
+                return 'html5';
+            }            
+            else {
+                return 'not supported';
             }
         }
     }
@@ -51,9 +44,18 @@ export class VideoPlayer extends AppElement {
         let videoSrc = this.#detectVideoSource(src);
         var iframe = '';
         if ( videoSrc==='vimeo'){
-            iframe = `<iframe class="has-ratio" src="${src}" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+            let videoId = src.split('/').pop().split('?')[0];
+            src = `https://player.vimeo.com/video/${videoId}`;
+            iframe = `<iframe class="has-ratio" src="${src}" width="100%" height="315" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
         } else if (videoSrc==='youtube'){
-            iframe = `<iframe class="has-ratio"  width="560" height="315" src="${src}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+            iframe = `<iframe class="has-ratio"  width="100%" height="315"  src="${src}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+        } else if (videoSrc==='youtu.be'){
+            //convert youtu.be to youtube embed
+            let videoId = src.split('/').pop().split('?')[0];
+            let embedSrc = `https://www.youtube.com/embed/${videoId}`;
+            iframe = `<iframe class="has-ratio"  width="100%" height="315" src="${embedSrc}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+        } else if(videoSrc==='html5'){
+            iframe = `<video class="has-ratio"  width="100%" height="315" controls autoplay><source src="${src}" type="video/mp4"></video>`
         } else {
             iframe = "Video source not supported"
         }
@@ -66,21 +68,20 @@ export class VideoPlayer extends AppElement {
             <div class="container p-4 ">
                 ${this.getTitles()}
                 <div class="columns is-centered">
-                    <div class="column ${this.state.image?.size!=undefined?this.state.video.size:'is-10'}">
-                    <figure ${this.getClasses(["image"], this.state.video?.classList)} ${this.setAnimation(this.state.video?.animation)}>
-                        ${this.#getIframe(this.state.video?.src)}
-                    </figure>
-                    ${this.state.description?.text[this.state.context.lang]!=undefined?`
+                    <div class="column ${this.state.image?.size!=undefined?this.state.video.size:'is-10'}>
+                        <figure ${this.getClasses(["image"], this.state.video?.classList)} ${this.setAnimation(this.state.video?.animation)}>
+                            ${this.#getIframe(this.state.video?.src)}
+                        </figure>
+                        ${this.state.description?.text[this.state.context.lang]!=undefined?`
                         <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
                             ${this.md.render(this.state.description?.text[this.state.context.lang])}
                         </div>`:''}  
-                    ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''}
+                        ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''}
                     </div>
                 </div>
             </div>
         </section>
         `
-
     }
 
 }

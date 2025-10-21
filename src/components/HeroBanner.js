@@ -69,23 +69,8 @@ render(){
       vertical-align: -.125em;
       text-shadow: 1px 1px 2px black;
     }
-    ${this.state.backgroundImage?.url!=undefined?`
-    #${this.state.id}-content {
-      background-image: url("${this.state.backgroundImage.url}");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-      ${this.state.backgroundImage?.fixed?`background-attachment: fixed;`:''}
-      ${this.state.backgroundImage?.filter?`filter: ${this.state.backgroundImage?.filter};`:''}
-    }
-    `:''}
-    ${this.state.backgroundImage?.urlMobile?`@media (max-width: 768px) {
-      #${this.state.id}-content {
-        background-image: url("${this.state.backgroundImage?.urlMobile}");
-      }
-    }`:''}
   </style>
-  <div ${`id="${this.state.id}-content"`} ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)}>
+  <div ${`id="${this.state.id}-content"`} ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
     <div class="hero-body ${this.state.alignment}">
       <div ${this.getClasses(["container"], this.state.body?.classList)}>
         ${this.state.caption?.text[this.state.context.lang]!=undefined?`
