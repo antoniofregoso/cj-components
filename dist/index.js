@@ -142,31 +142,29 @@
       return ` style="${style}"`;
     }
     /**
-     * Generate caption, title and subtitle of the component
-     */
+    * Generate caption, title and subtitle of the component
+    */
     getTitles() {
       let titles = "";
       if (this.state != void 0) {
         titles = /* HTML */
         `
             <div class="content">    
-            ${this.state.caption?.text[this.state.context.lang] != void 0 ? `
-            <h2 ${this.getClasses(["subtitle"], this.state.caption?.classList)}  ${this.setAnimation(this.state.caption?.animation)}>${this.state.caption.text[this.state.context.lang]}</h2>` : ""}          
-            ${this.state.title?.text[this.state.context.lang] != void 0 ? `
-            <h1 ${this.getClasses([], this.state.title?.classList)}  ${this.setAnimation(this.state.title?.animation)}>${this.state.title.text[this.state.context.lang]}</h1>` : ``}
-            ${this.state.subtitle?.text[this.state.context.lang] != void 0 ? `
-            <h2 ${this.getClasses([], this.state.subtitle?.classList)}  ${this.setAnimation(this.state.subtitle?.animation)}>${this.state.subtitle.text[this.state.context.lang]}</h2>` : ``}
-           </div>`;
+                ${this.state.caption?.text[this.state.context.lang] != void 0 ? `
+                <h2 ${this.getClasses(["subtitle"], this.state.caption?.classList)}  ${this.setAnimation(this.state.caption?.animation)}>${this.state.caption.text[this.state.context.lang]}</h2>` : ""}          
+                ${this.state.title?.text[this.state.context.lang] != void 0 ? `
+                <h1 ${this.getClasses([], this.state.title?.classList)}  ${this.setAnimation(this.state.title?.animation)}>${this.state.title.text[this.state.context.lang]}</h1>` : ``}
+                ${this.state.subtitle?.text[this.state.context.lang] != void 0 ? `
+                <h2 ${this.getClasses([], this.state.subtitle?.classList)}  ${this.setAnimation(this.state.subtitle?.animation)}>${this.state.subtitle.text[this.state.context.lang]}</h2>` : ``}
+            </div>`;
       }
       return titles;
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
-        if (this.state.buttons?.eventName != void 0) {
-          this.eventName = this.state.buttons.eventName;
-        }
+    handleEvent(event) {
+      if (event.type === "click") {
+        this.eventName = this.state.buttons?.eventName ?? this.state.eventName ?? this.eventName;
         const clickFunnel = new CustomEvent(this.eventName, {
-          detail: { source: event2.target.id },
+          detail: { source: event.target.id },
           bubbles: true,
           composed: true
         });
@@ -197,8 +195,7 @@
           buttons += `<${el.href != void 0 ? "a" : "button"} id="${el.id}" ${this.getClasses(["button"], el.classList)} ${el.href != void 0 ? `href="${el.href}"` : ""}>${el?.text[this.state.context.lang]}</${el.href != void 0 ? "a" : "button"}>`;
         });
         return buttons;
-      } else
-        return "";
+      } else return "";
     }
     /**
      * Generate the CTA button container and insert the buttons described in the props
@@ -215,8 +212,7 @@
             `
         );
         return buttons;
-      } else
-        return "";
+      } else return "";
     }
     /**
      * Render the component
@@ -260,6 +256,19 @@
       super();
       this.data = data;
       this.template = template;
+      this.scrollStopping = {
+        name: "",
+        session: "",
+        page: {
+          start: Date.now(),
+          end: 0,
+          time: 0,
+          leavingapp: 0,
+          views: 0,
+          req: {}
+        },
+        sections: {}
+      };
       try {
         let app = document.querySelector("#app");
         app.innerHTML = "";
@@ -360,6 +369,42 @@
       return props;
     }
     /**
+     * 
+     * @param {String} name 
+     * @param {Object} track 
+     * @returns 
+     */
+    setSectionViewed(name, track) {
+      let res = {
+        [name]: {
+          order: track.order,
+          start: Date.now(),
+          end: 0,
+          time: 0,
+          views: track.views + 1
+        }
+      };
+      return res;
+    }
+    /**
+     * 
+     * @param {String} name 
+     * @param {Object} track 
+     * @returns 
+     */
+    setSectionUnviewed(name, track) {
+      let res = {
+        [name]: {
+          order: track.order,
+          start: track.start,
+          end: Date.now(),
+          time: track.time + (Date.now() - track.start),
+          views: track.views
+        }
+      };
+      return res;
+    }
+    /**
      * Update the props to each of the components
      */
     loadData() {
@@ -427,13 +472,36 @@
       }
     }
     /**
+     * 
+     * @param {String} htmlTemplate 
+     * @param {Array} validNames 
+     * @returns 
+     */
+    #getOrderedIdsFromTemplate(htmlTemplate, validNames) {
+      const regex = /id="([^"]+)"/g;
+      let match;
+      let orderedIds = [];
+      while ((match = regex.exec(htmlTemplate)) !== null) {
+        orderedIds.push(match[1]);
+      }
+      const validIdsInOrder = orderedIds.filter((id) => validNames.includes(id));
+      return validIdsInOrder;
+    }
+    /**
      * Add the events that the page responds to
      */
     #addEvents() {
       if (Array.isArray(this.data.props.events.trackViewed)) {
-        const observerUser = new IntersectionObserver(
+        let sections = this.#getOrderedIdsFromTemplate(this.template, this.data.props.events.trackViewed);
+        let i = 0;
+        sections.forEach((id) => {
+          this.scrollStopping.sections[id] = { order: i, start: 0, end: 0, time: 0, views: 0 };
+          i++;
+        });
+        const observerSections = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
+              this.scrollStopping;
               const id = entry.target.id;
               if (entry.isIntersecting) {
                 let viewedElement = new CustomEvent("viewedelement", {
@@ -457,14 +525,14 @@
             // Usa el viewport como root
             rootMargin: "0px",
             // Margen adicional, si es necesario
-            threshold: 1
+            threshold: 0.25
             // 1.0 significa que el elemento debe estar completamente visible
           }
         );
         this.data.props.events.trackViewed.forEach((id) => {
           const el = this.querySelector(`#${id}`);
           if (el) {
-            observerUser.observe(el);
+            observerSections.observe(el);
           }
         });
       }
@@ -497,8 +565,7 @@
     #extractEventNames(jsonObj) {
       const eventNames = /* @__PURE__ */ new Set();
       function traverse(obj) {
-        if (!obj || typeof obj !== "object")
-          return;
+        if (!obj || typeof obj !== "object") return;
         if (obj.hasOwnProperty("eventName")) {
           eventNames.add(obj.eventName);
         }
@@ -620,13 +687,11 @@
     return e;
   }
   function _toPrimitive(t2, r3) {
-    if ("object" != typeof t2 || !t2)
-      return t2;
+    if ("object" != typeof t2 || !t2) return t2;
     var e = t2[Symbol.toPrimitive];
     if (void 0 !== e) {
       var i = e.call(t2, r3 || "default");
-      if ("object" != typeof i)
-        return i;
+      if ("object" != typeof i) return i;
       throw new TypeError("@@toPrimitive must return a primitive value.");
     }
     return ("string" === r3 ? String : Number)(t2);
@@ -645,14 +710,10 @@
     measure: noop
   };
   try {
-    if (typeof window !== "undefined")
-      _WINDOW = window;
-    if (typeof document !== "undefined")
-      _DOCUMENT = document;
-    if (typeof MutationObserver !== "undefined")
-      _MUTATION_OBSERVER = MutationObserver;
-    if (typeof performance !== "undefined")
-      _PERFORMANCE = performance;
+    if (typeof window !== "undefined") _WINDOW = window;
+    if (typeof document !== "undefined") _DOCUMENT = document;
+    if (typeof MutationObserver !== "undefined") _MUTATION_OBSERVER = MutationObserver;
+    if (typeof performance !== "undefined") _PERFORMANCE = performance;
   } catch (e) {
   }
   var {
@@ -1043,12 +1104,9 @@
     }
   }
   function coerce(val) {
-    if (val === "")
-      return true;
-    if (val === "false")
-      return false;
-    if (val === "true")
-      return true;
+    if (val === "") return true;
+    if (val === "false") return false;
+    if (val === "true") return true;
     return val;
   }
   if (DOCUMENT && typeof DOCUMENT.querySelector === "function") {
@@ -1080,8 +1138,7 @@
     initial.cssPrefix = initial.familyPrefix;
   }
   var _config = _objectSpread2(_objectSpread2({}, _default), initial);
-  if (!_config.autoReplaceSvg)
-    _config.observeMutations = false;
+  if (!_config.autoReplaceSvg) _config.observeMutations = false;
   var config = {};
   Object.keys(_default).forEach((key) => {
     Object.defineProperty(config, key, {
@@ -1266,14 +1323,10 @@
     }
   };
   var w = WINDOW || {};
-  if (!w[NAMESPACE_IDENTIFIER])
-    w[NAMESPACE_IDENTIFIER] = {};
-  if (!w[NAMESPACE_IDENTIFIER].styles)
-    w[NAMESPACE_IDENTIFIER].styles = {};
-  if (!w[NAMESPACE_IDENTIFIER].hooks)
-    w[NAMESPACE_IDENTIFIER].hooks = {};
-  if (!w[NAMESPACE_IDENTIFIER].shims)
-    w[NAMESPACE_IDENTIFIER].shims = [];
+  if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
+  if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
+  if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
+  if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
   var namespace = w[NAMESPACE_IDENTIFIER];
   var functions = [];
   var listener = function() {
@@ -1284,12 +1337,10 @@
   var loaded = false;
   if (IS_DOM) {
     loaded = (DOCUMENT.documentElement.doScroll ? /^loaded|^c/ : /^loaded|^i|^c/).test(DOCUMENT.readyState);
-    if (!loaded)
-      DOCUMENT.addEventListener("DOMContentLoaded", listener);
+    if (!loaded) DOCUMENT.addEventListener("DOMContentLoaded", listener);
   }
   function domready(fn) {
-    if (!IS_DOM)
-      return;
+    if (!IS_DOM) return;
     loaded ? setTimeout(fn, 0) : functions.push(fn);
   }
   function toHtml(abstractNodes) {
@@ -1687,8 +1738,7 @@
         this.definitions[key] = _objectSpread2(_objectSpread2({}, this.definitions[key] || {}), additions[key]);
         defineIcons(key, additions[key]);
         const longPrefix = PREFIX_TO_LONG_STYLE[s][key];
-        if (longPrefix)
-          defineIcons(longPrefix, additions[key]);
+        if (longPrefix) defineIcons(longPrefix, additions[key]);
         build();
       });
     }
@@ -1706,8 +1756,7 @@
           icon: icon2
         } = normalized[key];
         const aliases = icon2[2];
-        if (!additions[prefix])
-          additions[prefix] = {};
+        if (!additions[prefix]) additions[prefix] = {};
         if (aliases.length > 0) {
           aliases.forEach((alias) => {
             if (typeof alias === "string") {
@@ -1798,8 +1847,7 @@
       iconName
     } = iconLookup;
     const prefix = iconLookup.prefix || getDefaultUsablePrefix();
-    if (!iconName)
-      return;
+    if (!iconName) return;
     iconName = byAlias(prefix, iconName) || iconName;
     return iconFromMapping(library.definitions, prefix, iconName) || iconFromMapping(namespace.styles, prefix, iconName);
   }
@@ -1888,10 +1936,9 @@
     const {
       autoReplaceSvgRoot = DOCUMENT
     } = params;
-    if ((Object.keys(namespace.styles).length > 0 || config.autoFetchSvg) && IS_DOM && config.autoReplaceSvg)
-      api.dom.i2svg({
-        node: autoReplaceSvgRoot
-      });
+    if ((Object.keys(namespace.styles).length > 0 || config.autoFetchSvg) && IS_DOM && config.autoReplaceSvg) api.dom.i2svg({
+      node: autoReplaceSvgRoot
+    });
   };
   function domVariants(val, abstractCreator) {
     Object.defineProperty(val, "abstract", {
@@ -1904,8 +1951,7 @@
     });
     Object.defineProperty(val, "node", {
       get: function() {
-        if (!IS_DOM)
-          return;
+        if (!IS_DOM) return;
         const container = DOCUMENT.createElement("div");
         container.innerHTML = val.html;
         return container.children;
@@ -2360,8 +2406,7 @@
       observeMutationsRoot = DOCUMENT
     } = options;
     mo = new MUTATION_OBSERVER((objects) => {
-      if (disabled)
-        return;
+      if (disabled) return;
       const defaultPrefix = getDefaultUsablePrefix();
       toArray(objects).forEach((mutationRecord) => {
         if (mutationRecord.type === "childList" && mutationRecord.addedNodes.length > 0 && !isWatched(mutationRecord.addedNodes[0])) {
@@ -2380,16 +2425,14 @@
               iconName
             } = getCanonicalIcon(classArray(mutationRecord.target));
             mutationRecord.target.setAttribute(DATA_PREFIX, prefix || defaultPrefix);
-            if (iconName)
-              mutationRecord.target.setAttribute(DATA_ICON, iconName);
+            if (iconName) mutationRecord.target.setAttribute(DATA_ICON, iconName);
           } else if (hasBeenReplaced(mutationRecord.target)) {
             nodeCallback(mutationRecord.target);
           }
         }
       });
     });
-    if (!IS_DOM)
-      return;
+    if (!IS_DOM) return;
     mo.observe(observeMutationsRoot, {
       childList: true,
       attributes: true,
@@ -2398,8 +2441,7 @@
     });
   }
   function disconnect() {
-    if (!mo)
-      return;
+    if (!mo) return;
     mo.disconnect();
   }
   function styleParser(node) {
@@ -2531,8 +2573,7 @@
   }
   function onTree(root) {
     let callback = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
-    if (!IS_DOM)
-      return Promise.resolve();
+    if (!IS_DOM) return Promise.resolve();
     const htmlClassList = DOCUMENT.documentElement.classList;
     const hclAdd = (suffix) => htmlClassList.add("".concat(HTML_CLASS_I2SVG_BASE_CLASS, "-").concat(suffix));
     const hclRemove = (suffix) => htmlClassList.remove("".concat(HTML_CLASS_I2SVG_BASE_CLASS, "-").concat(suffix));
@@ -2577,8 +2618,7 @@
           hclAdd("active");
           hclAdd("complete");
           hclRemove("pending");
-          if (typeof callback === "function")
-            callback();
+          if (typeof callback === "function") callback();
           mark2();
           resolve();
         });
@@ -2624,8 +2664,7 @@
       attributes = {},
       styles: styles2 = {}
     } = params;
-    if (!iconDefinition)
-      return;
+    if (!iconDefinition) return;
     const {
       prefix,
       iconName,
@@ -3004,8 +3043,7 @@
     return node.parentNode !== document.head && !~TAGNAMES_TO_SKIP_FOR_PSEUDOELEMENTS.indexOf(node.tagName.toUpperCase()) && !node.getAttribute(DATA_FA_PSEUDO_ELEMENT) && (!node.parentNode || node.parentNode.tagName !== "svg");
   }
   function searchPseudoElements(root) {
-    if (!IS_DOM)
-      return;
+    if (!IS_DOM) return;
     return new Promise((resolve, reject) => {
       const operations = toArray(root.querySelectorAll("*")).filter(processable).map(replace);
       const end2 = perf.begin("searchPseudoElements");
@@ -13011,12 +13049,12 @@
       this.setAttribute("i18n", this.state.context?.lang);
       this.setAttribute("theme", this.state.context?.theme);
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
+    handleEvent(event) {
+      if (event.type === "click") {
         let theme = "";
-        switch (event2.currentTarget.id) {
+        switch (event.currentTarget.id) {
           case "themes":
-            let themes = document.getElementById(event2.currentTarget.id);
+            let themes = document.getElementById(event.currentTarget.id);
             themes.parentNode.classList.toggle("is-active");
             break;
           case "light-theme":
@@ -13034,7 +13072,7 @@
             break;
           default:
             const selectLang = new CustomEvent("user:select-lang", {
-              detail: event2.target.id.slice(4),
+              detail: event.target.id.slice(4),
               bubbles: true,
               composed: true
             });
@@ -16977,19 +17015,6 @@
       this.getAttribute("id") || this.setAttribute("id", this.state.id || `component-${Math.floor(Math.random() * 100)}`);
       this.md = new Remarkable();
     }
-    registerExtraEvents() {
-      if (event.type === "click") {
-        if (this.state.footer?.eventName != void 0) {
-          this.eventName = this.state.footer.eventName;
-        }
-        const clickFunnel = new CustomEvent(this.eventName, {
-          detail: { source: event.target.id },
-          bubbles: true,
-          composed: true
-        });
-        this.dispatchEvent(clickFunnel);
-      }
-    }
     #card(props) {
       let card = (
         /* html */
@@ -17058,14 +17083,14 @@
     render() {
       this.innerHTML = /* html */
       `
-       <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container py-4">
                 ${this.getTitles(this.state)}
                 <div class="columns is-multiline mx-4">
                     ${this.#getCards()}
                 </div>
             </div>
-        </div>`;
+        </section>`;
       this.addEvents();
     }
   };
@@ -17295,19 +17320,19 @@
     attributeChangedCallback(name, old, now) {
       this.render();
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
-        if (event2.target.tagName === "BUTTON") {
+    handleEvent(event) {
+      if (event.type === "click") {
+        if (event.target.tagName === "BUTTON") {
           if (this.state.buttons?.eventName != void 0) {
             this.eventName = this.state.buttons.eventName;
           }
           const clickFunnel = new CustomEvent(this.eventName, {
-            detail: { source: event2.target.id },
+            detail: { source: event.target.id },
             bubbles: true,
             composed: true
           });
           this.dispatchEvent(clickFunnel);
-        } else if (event2.target.tagName === "path" || event2.target.tagName === "svg") {
+        } else if (event.target.tagName === "path" || event.target.tagName === "svg") {
           this.scrollDown();
         }
       }
@@ -17330,23 +17355,8 @@
       vertical-align: -.125em;
       text-shadow: 1px 1px 2px black;
     }
-    ${this.state.backgroundImage?.url != void 0 ? `
-    #${this.state.id}-content {
-      background-image: url("${this.state.backgroundImage.url}");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-      ${this.state.backgroundImage?.fixed ? `background-attachment: fixed;` : ""}
-      ${this.state.backgroundImage?.filter ? `filter: ${this.state.backgroundImage?.filter};` : ""}
-    }
-    ` : ""}
-    ${this.state.backgroundImage?.urlMobile ? `@media (max-width: 768px) {
-      #${this.state.id}-content {
-        background-image: url("${this.state.backgroundImage?.urlMobile}");
-      }
-    }` : ""}
   </style>
-  <div ${`id="${this.state.id}-content"`} ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)}>
+  <div ${`id="${this.state.id}-content"`} ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
     <div class="hero-body ${this.state.alignment}">
       <div ${this.getClasses(["container"], this.state.body?.classList)}>
         ${this.state.caption?.text[this.state.context.lang] != void 0 ? `
@@ -17647,7 +17657,6 @@
       this.setAttribute("img-pos", this.state.imagePosition);
       this.setAttribute("text-width", this.state.textWidth);
       this.setAttribute("img-width", this.state.imageWidth);
-      this.classList.add("columns", "is-vcentered", "is-gapless", "my-0");
       this.md = new Remarkable();
     }
     static get observedAttributes() {
@@ -17671,24 +17680,11 @@
         /* html */
         `  
         <div ${this.getClasses(["column"], this.state.textWidth)}>
-            <div  class="p-4 content"> 
-                ${this.state.caption?.text[this.state.context.lang] != void 0 ? `
-                <p ${this.getClasses(["subtitle"], this.state.caption?.classList)}  ${this.setAnimation(this.state.caption.animation)}>
-                ${this.state.caption.text[this.state.context.lang]}
-                </p>` : ""}         
-                ${this.state.title?.text[this.state.context.lang] != void 0 ? `
-                <h1 ${this.getClasses(["title"], this.state.title?.classList)}  ${this.setAnimation(this.state.title?.animation)}>
-                    ${this.state.title.text[this.state.context.lang]}
-                </h1>` : ""}
-                ${this.state.subtitle?.text[this.state.context.lang] != void 0 ? `
-                <h2 ${this.getClasses(["subtitle"], this.state.subtitle?.classList)}  ${this.setAnimation(this.state.subtitle?.animation)}>
-                    ${this.state.subtitle.text[this.state.context.lang]}
-                </h2>` : ""}
+            <div  class="p-4"> 
                 ${this.state.description?.text[this.state.context.lang] != void 0 ? `
                 <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
                     ${this.md.render(this.state.description?.text[this.state.context.lang])}
-                </div>` : ""}    
-                ${this.state.buttons != void 0 ? this.buttonsRender(this.state.buttons) : ""}               
+                </div>` : ""}            
             </div>
         </div>
             `
@@ -17696,9 +17692,13 @@
       this.innerHTML = /* html */
       `
         <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+            <div class="container py-4">
+                ${this.getTitles()}
             <div class="columns is-vcentered is-gapless my-0"> 
                 ${this.state.imagePosition === "right" ? text3 : img}
                 ${this.state.imagePosition === "right" ? img : text3}
+            </div>              
+                ${this.state.buttons != void 0 ? this.buttonsRender(this.state.buttons) : ""}     
             </div>
         </section>
         `;
@@ -18893,6 +18893,7 @@
       this.state = this.initState(this.#default, props);
       this.getAttribute("id") || this.setAttribute("id", this.state.id || `component-${Math.floor(Math.random() * 100)}`);
       library$1.add(icons2, icons);
+      this.md = new Remarkable();
     }
     /**
      * 
@@ -18914,58 +18915,40 @@
         this.state.items.forEach((item) => {
           itemsHtml += /* html */
           `         
-                <div class="level-item has-text-centered">
-                    <div>
-                        ${item.icon?.name != void 0 ? `
-                            <div ${this.getClasses(["icon", "title"], item.icon?.classList)} 
-                                ${this.setAnimation(item.icon?.animation)}>
-                                ${this.#getIcon(item.icon.prefix, item.icon.name)}
-                            </div>                    
-                            ` : ""}                    
-                        <p ${this.getClasses(["heading"], item.heading?.classList)}
-                            ${this.setAnimation(item.heading?.animation)}>
-                            ${item.heading?.text[this.state.context.lang] != void 0 ? item.heading.text[this.state.context.lang] : ""}
-                        </p>
-                        <p ${this.getClasses(["title"], item.title?.classList)}
-                            ${this.setAnimation(item.title?.animation)}>
-                            ${item.title?.text[this.state.context.lang] != void 0 ? item.title.text[this.state.context.lang] : ""}
-                        </p>
-                    </div>
-                </div>`;
+            <div class="level-item has-text-centered">
+                <div>
+                    ${item.icon?.name != void 0 ? `
+                        <div ${this.getClasses(["icon", "title"], item.icon?.classList)} 
+                            ${this.setAnimation(item.icon?.animation)}>
+                            ${this.#getIcon(item.icon.prefix, item.icon.name)}
+                        </div>                    
+                        ` : ""}                    
+                    <p ${this.getClasses(["heading"], item.heading?.classList)}
+                        ${this.setAnimation(item.heading?.animation)}>
+                        ${item.heading?.text[this.state.context.lang] != void 0 ? item.heading.text[this.state.context.lang] : ""}
+                    </p>
+                    <p ${this.getClasses(["title"], item.title?.classList)}
+                        ${this.setAnimation(item.title?.animation)}>
+                        ${item.title?.text[this.state.context.lang] != void 0 ? item.title.text[this.state.context.lang] : ""}
+                        
+                    </p>
+                </div>
+            </div>`;
         });
       }
       return itemsHtml;
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
-        let eventName;
-        if (this.state.eventName === void 0) {
-          eventName = "user:click-card";
-        } else {
-          eventName = this.state.eventName;
-        }
-        const clickFunnel = new CustomEvent(eventName, {
-          detail: { click: event2.target.id },
-          bubbles: true,
-          composed: true
-        });
-        this.dispatchEvent(clickFunnel);
-      }
-    }
-    addEvents() {
-      let buttons = this.querySelectorAll("button");
-      if (buttons.length > 0) {
-        buttons.forEach((item) => {
-          item.addEventListener("click", this);
-        });
-      }
-    }
     render() {
       this.innerHTML = /* html */
       `
-        <nav ${this.getClasses(["level"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
-            ${this.#getItems()}
-        </nav>
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+            <div class="container my-4">
+                ${this.getTitles()}
+                <nav ${this.getClasses(["level"])}>
+                    ${this.#getItems()}
+                </nav>
+            </div>
+        </section>
         `;
     }
   };
@@ -18988,8 +18971,8 @@
       this.getAttribute("id") || this.setAttribute("id", this.state.id || `component-${Math.floor(Math.random() * 100)}`);
       this.md = new Remarkable();
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
+    handleEvent(event) {
+      if (event.type === "click") {
         let eventName;
         if (this.state.buttons.eventName === void 0) {
           eventName = "user:click-image-text";
@@ -18997,7 +18980,7 @@
           eventName = this.state.buttons.eventName;
         }
         const clickFunnel = new CustomEvent(eventName, {
-          detail: { source: event2.target.id },
+          detail: { source: event.target.id },
           bubbles: true,
           composed: true
         });
@@ -19084,9 +19067,9 @@
         this.querySelector(".modal").classList.add("is-active");
       }
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
-        if (event2.target.ariaLabel === "close") {
+    handleEvent(event) {
+      if (event.type === "click") {
+        if (event.target.ariaLabel === "close") {
           this.querySelector(".modal").classList.remove("is-active");
           this.removeAttribute("active");
         }
@@ -19148,8 +19131,7 @@
         return this.#card();
       } else if (this.state.message != void 0) {
         return this.#message();
-      } else
-        return "<p>There is no content to display</p>";
+      } else return "<p>There is no content to display</p>";
     }
     render() {
       this.innerHTML = /* html */
@@ -19242,36 +19224,36 @@
         }
     `
     );
-    handleEvent(event2) {
-      if (event2.type === "click") {
-        if (event2.currentTarget.id === "chatToggle") {
+    handleEvent(event) {
+      if (event.type === "click") {
+        if (event.currentTarget.id === "chatToggle") {
           let chat = this.shadowRoot.querySelector(".chat-content");
           if (this.state.isExpanded === true) {
             this.setAttribute("value", "closed");
             this.state.isExpanded = false;
             chat.style.display = "none";
-            event2.currentTarget.innerHTML = icon(faCommentDots, { transform: { size: 12 }, styles: { "color": this.state.color } }).html[0];
+            event.currentTarget.innerHTML = icon(faCommentDots, { transform: { size: 12 }, styles: { "color": this.state.color } }).html[0];
           } else {
             this.setAttribute("value", "open");
             this.state.isExpanded = true;
             chat.style.display = "block";
-            event2.currentTarget.innerHTML = icon(faCircleXmark, { transform: { size: 12 }, styles: { "color": this.state.color } }).html[0];
+            event.currentTarget.innerHTML = icon(faCircleXmark, { transform: { size: 12 }, styles: { "color": this.state.color } }).html[0];
           }
-        } else if (event2.currentTarget.id === "chatAI") {
+        } else if (event.currentTarget.id === "chatAI") {
           const clickFunnel = new CustomEvent(this.state.ai.eventName, {
-            detail: { click: event2.target.id },
+            detail: { click: event.target.id },
             bubbles: true,
             composed: true
           });
           this.dispatchEvent(clickFunnel);
         }
-      } else if (event2.type === "mouseover") {
-        if (event2.currentTarget.id === "chatToggle" && this.state.isExpanded === false) {
-          event2.currentTarget.innerHTML = icon(faFaceSmile, { transform: { size: 12 }, styles: { "color": this.state.color } }).html[0];
+      } else if (event.type === "mouseover") {
+        if (event.currentTarget.id === "chatToggle" && this.state.isExpanded === false) {
+          event.currentTarget.innerHTML = icon(faFaceSmile, { transform: { size: 12 }, styles: { "color": this.state.color } }).html[0];
         }
-      } else if (event2.type === "mouseleave") {
-        if (event2.currentTarget.id === "chatToggle" && this.state.isExpanded === false) {
-          event2.currentTarget.innerHTML = icon(faCommentDots, { transform: { size: 12 }, styles: { "color": this.state.color } }).html[0];
+      } else if (event.type === "mouseleave") {
+        if (event.currentTarget.id === "chatToggle" && this.state.isExpanded === false) {
+          event.currentTarget.innerHTML = icon(faCommentDots, { transform: { size: 12 }, styles: { "color": this.state.color } }).html[0];
         }
       }
     }
@@ -19335,27 +19317,27 @@
     attributeChangedCallback(name, old, now) {
       this.render();
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
-        if (event2.target.tagName === "BUTTON") {
+    handleEvent(event) {
+      if (event.type === "click") {
+        if (event.target.tagName === "BUTTON") {
           if (this.state.buttons.eventName != void 0) {
             this.eventName = this.state.buttons.eventName;
           }
           const clickFunnel = new CustomEvent(this.eventName, {
-            detail: { source: event2.target.id },
+            detail: { source: event.target.id },
             bubbles: true,
             composed: true
           });
           this.dispatchEvent(clickFunnel);
-        } else if (event2.target.tagName === "DIV") {
+        } else if (event.target.tagName === "DIV") {
           let items = this.querySelectorAll(".message");
           items.forEach((item) => {
             item.querySelector(".message-header  span").innerHTML = "&plus;";
             let content2 = item.querySelector(".message-body");
             content2.classList.add("is-hidden");
           });
-          event2.target.querySelector("span").innerHTML = "&minus;";
-          let content = event2.target.parentNode.querySelector(".message-body");
+          event.target.querySelector("span").innerHTML = "&minus;";
+          let content = event.target.parentNode.querySelector(".message-body");
           content.classList.remove("is-hidden");
         }
       }
@@ -19443,17 +19425,11 @@
       this.getAttribute("id") || this.setAttribute("id", this.state.id || `component-${Math.floor(Math.random() * 100)}`);
       this.md = new Remarkable();
     }
-    static get observedAttributes() {
-      return [];
-    }
-    attributeChangedCallback(name, old, now) {
-      this.render();
-    }
     render() {
       this.innerHTML = /* html */
-      `
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.getBackground()}>
-            <div class="container py-4"  ${this.setAnimation(this.state.animation)}>
+      ` 
+            <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+                <div class="container py-4">    
                 ${this.getTitles()}
                 <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
                 ${this.md.render(this.state.content?.text[this.state.context.lang])}
@@ -19499,13 +19475,13 @@
     attributeChangedCallback(name, old, now) {
       this.render();
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
+    handleEvent(event) {
+      if (event.type === "click") {
         if (this.state.buttons?.eventName != void 0) {
           this.eventName = this.state.buttons.eventName;
         }
         const clickFunnel = new CustomEvent(this.eventName, {
-          detail: { source: event2.target.id },
+          detail: { source: event.target.id },
           bubbles: true,
           composed: true
         });
@@ -19561,13 +19537,13 @@
     attributeChangedCallback(name, old, now) {
       this.render();
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
+    handleEvent(event) {
+      if (event.type === "click") {
         if (this.state.buttons?.eventName != void 0) {
           this.eventName = this.state.buttons.eventName;
         }
         const clickFunnel = new CustomEvent(this.eventName, {
-          detail: { source: event2.target.id },
+          detail: { source: event.target.id },
           bubbles: true,
           composed: true
         });
@@ -19612,13 +19588,13 @@
     attributeChangedCallback(name, old, now) {
       this.render();
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
+    handleEvent(event) {
+      if (event.type === "click") {
         if (this.state.buttons?.eventName != void 0) {
           this.eventName = this.state.buttons.eventName;
         }
         const clickFunnel = new CustomEvent(this.eventName, {
-          detail: { source: event2.target.id },
+          detail: { source: event.target.id },
           bubbles: true,
           composed: true
         });
@@ -19661,22 +19637,17 @@
       this.state = this.initState(this.#default, props);
       this.getAttribute("id") || this.setAttribute("id", this.state.id || `component-${Math.floor(Math.random() * 100)}`);
       this.md = new Remarkable();
-      this.state.videoSource = this.#detectVideoSource(this.state.video?.src);
-    }
-    static get observedAttributes() {
-      return ["src"];
-    }
-    attributeChangedCallback(name, old, now) {
-      console.log(name, old, now);
-      this.state.value = this.attribute2CamelCase(now);
-      this.render();
     }
     #detectVideoSource(url) {
       if (typeof url === "string") {
         if (url.includes("vimeo")) {
           return "vimeo";
-        } else if (url.includes("youtube")) {
+        } else if (url.includes("youtube.com/embed")) {
           return "youtube";
+        } else if (url.includes("youtu.be")) {
+          return "youtu.be";
+        } else if (/\.(mp4|webm|ogg)(\?|$)/i.test(url)) {
+          return "html5";
         } else {
           return "not supported";
         }
@@ -19686,9 +19657,17 @@
       let videoSrc = this.#detectVideoSource(src);
       var iframe = "";
       if (videoSrc === "vimeo") {
-        iframe = `<iframe class="has-ratio" src="${src}" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+        let videoId = src.split("/").pop().split("?")[0];
+        src = `https://player.vimeo.com/video/${videoId}`;
+        iframe = `<iframe class="has-ratio" src="${src}" width="100%" height="315" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
       } else if (videoSrc === "youtube") {
-        iframe = `<iframe class="has-ratio"  width="560" height="315" src="${src}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+        iframe = `<iframe class="has-ratio"  width="100%" height="315"  src="${src}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      } else if (videoSrc === "youtu.be") {
+        let videoId = src.split("/").pop().split("?")[0];
+        let embedSrc = `https://www.youtube.com/embed/${videoId}`;
+        iframe = `<iframe class="has-ratio"  width="100%" height="315" src="${embedSrc}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      } else if (videoSrc === "html5") {
+        iframe = `<video class="has-ratio"  width="100%" height="315" controls autoplay><source src="${src}" type="video/mp4"></video>`;
       } else {
         iframe = "Video source not supported";
       }
@@ -19701,15 +19680,15 @@
             <div class="container p-4 ">
                 ${this.getTitles()}
                 <div class="columns is-centered">
-                    <div class="column ${this.state.image?.size != void 0 ? this.state.video.size : "is-10"}">
-                    <figure ${this.getClasses(["image"], this.state.video?.classList)} ${this.setAnimation(this.state.video?.animation)}>
-                        ${this.#getIframe(this.state.video?.src)}
-                    </figure>
-                    ${this.state.description?.text[this.state.context.lang] != void 0 ? `
+                    <div class="column ${this.state.image?.size != void 0 ? this.state.video.size : "is-10"}>
+                        <figure ${this.getClasses(["image"], this.state.video?.classList)} ${this.setAnimation(this.state.video?.animation)}>
+                            ${this.#getIframe(this.state.video?.src)}
+                        </figure>
+                        ${this.state.description?.text[this.state.context.lang] != void 0 ? `
                         <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
                             ${this.md.render(this.state.description?.text[this.state.context.lang])}
                         </div>` : ""}  
-                    ${this.state.buttons != void 0 ? this.buttonsRender(this.state.buttons) : ""}
+                        ${this.state.buttons != void 0 ? this.buttonsRender(this.state.buttons) : ""}
                     </div>
                 </div>
             </div>
@@ -19767,12 +19746,12 @@
       this.getAttribute("id") || this.setAttribute("id", this.state.id || `component-${Math.floor(Math.random() * 100)}`);
       this.md = new Remarkable();
     }
-    handleEvent(event2) {
-      if (event2.type === "click") {
+    handleEvent(event) {
+      if (event.type === "click") {
         if (this.state.eventName != void 0) {
           this.eventName = this.state.eventName;
         }
-        if (event2.target.id === "download-ical") {
+        if (event.target.id === "download-ical") {
           console.log("iCal Downloaded");
         } else {
           const clickFunnel = new CustomEvent(this.eventName, {
@@ -19912,26 +19891,8 @@
 /*! Bundled license information:
 
 @fortawesome/fontawesome-svg-core/index.mjs:
-  (*!
-   * Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com
-   * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
-   * Copyright 2024 Fonticons, Inc.
-   *)
-
 @fortawesome/free-solid-svg-icons/index.mjs:
-  (*!
-   * Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com
-   * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
-   * Copyright 2024 Fonticons, Inc.
-   *)
-
 @fortawesome/free-regular-svg-icons/index.mjs:
-  (*!
-   * Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com
-   * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
-   * Copyright 2024 Fonticons, Inc.
-   *)
-
 @fortawesome/free-brands-svg-icons/index.mjs:
   (*!
    * Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com
