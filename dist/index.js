@@ -136,6 +136,9 @@
         if (this.state.backgroundImage?.fixed) {
           style = `${style} background-attachment: fixed;`;
         }
+        if (this.state.backgroundImage?.filter) {
+          style = `${style} filter: ${this.state.backgroundImage?.filter};`;
+        }
       } else {
         style = "";
       }
@@ -245,6 +248,8 @@
         leavingApp: false,
         leavedApp: false
       },
+      REABANDONMENT_THRESHOLD_MS: 3 * 60 * 1e3,
+      // 3 minutes
       classList: []
     };
     /**
@@ -277,6 +282,10 @@
         console.error('The element with id "app" does not exist to insert the element "app-page".', error);
       }
     }
+    #hasLeavedApp = false;
+    // To avoid multiple triggers of the event
+    #timeLeavedApp = 0;
+    // To store the time when the user left the app
     /**
      * Disable browser cache
      */
@@ -405,6 +414,22 @@
       return res;
     }
     /**
+     * 
+     * @param {Object} track 
+     * @returns 
+     */
+    setPageQuit(track) {
+      let res = {
+        start: track.start,
+        end: Date.now(),
+        time: Date.now() - track.start,
+        leavingapp: track.leavingapp,
+        views: track.views,
+        req: track.req
+      };
+      return res;
+    }
+    /**
      * Update the props to each of the components
      */
     loadData() {
@@ -487,6 +512,22 @@
       const validIdsInOrder = orderedIds.filter((id) => validNames.includes(id));
       return validIdsInOrder;
     }
+    #dispatchLeavedApp() {
+      if (this.#hasLeavedApp) {
+        let deltaTime = Date.now() - this.#timeLeavedApp;
+        if (deltaTime < this.state.REABANDONMENT_THRESHOLD_MS) {
+          return;
+        }
+      }
+      this.#hasLeavedApp = true;
+      this.#timeLeavedApp = Date.now();
+      let leavedApp = new CustomEvent("leavedapp", {
+        detail: { source: this.data.props.id },
+        bubbles: true,
+        composed: true
+      });
+      this.dispatchEvent(leavedApp);
+    }
     /**
      * Add the events that the page responds to
      */
@@ -550,15 +591,13 @@
         });
       }
       if (this.data.props?.events?.leavedapp === true) {
-        let leavedApp = new CustomEvent("leavedapp", {
-          detail: { source: this.data.props.id },
-          bubbles: true,
-          composed: true
-        });
         document.addEventListener("visibilitychange", () => {
           if (document.visibilityState === "hidden") {
-            this.dispatchEvent(leavedApp);
+            this.#dispatchLeavedApp();
           }
+        });
+        window.addEventListener("pagehide", () => {
+          this.#dispatchLeavedApp();
         });
       }
     }
@@ -17643,8 +17682,8 @@
   var ImageText = class extends AppElement {
     #default = {
       imagePosition: "left",
-      textWidth: "is-half",
       imageWidth: "is-half",
+      textWidth: "",
       context: {
         lang: "en"
       }
@@ -17679,7 +17718,7 @@
       let text3 = (
         /* html */
         `  
-        <div ${this.getClasses(["column"], this.state.textWidth)}>
+        <div ${this.getClasses(["column"], [this.state.textWidth])}>
             <div  class="p-4"> 
                 ${this.state.description?.text[this.state.context.lang] != void 0 ? `
                 <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
@@ -17694,7 +17733,7 @@
         <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container py-4">
                 ${this.getTitles()}
-            <div class="columns is-vcentered is-gapless my-0"> 
+            <div class="columns is-vcentered is-centered is-gapless my-0"> 
                 ${this.state.imagePosition === "right" ? text3 : img}
                 ${this.state.imagePosition === "right" ? img : text3}
             </div>              
@@ -18953,6 +18992,77 @@
     }
   };
   customElements.define("level-centered", LevelCentered);
+
+  // src/components/MediaGrid.js
+  var MediaGrid = class extends AppElement {
+    #default = {
+      context: {
+        lang: "en"
+      }
+    };
+    constructor(props = {}) {
+      super();
+      this.eventName = "user:click-media-grid";
+      this.state = this.initState(this.#default, props);
+      this.getAttribute("id") || this.setAttribute("id", this.state.id || `component-${Math.floor(Math.random() * 100)}`);
+      this.md = new Remarkable();
+    }
+    #mediaObject(props) {
+      return (
+        /*hrml*/
+        `
+    <div class="cell">
+        <div ${this.getClasses(["media"], this.state.mediaObjects?.classList)}  ${this.setAnimation(this.state.mediaObjects?.animation)}>
+        ${props.imageL?.src != void 0 ? `
+            <figure class="media-left">
+            <p class="image is-64x64">
+            <img src="${props.imageL.src}">
+            </p>
+            </figure>` : ""}
+            <div class="media-content">
+            <div ${this.getClasses(["content"], props.description?.classList)}>
+                ${props.description?.text[this.state.context.lang] != void 0 ? `${this.md.render(props.description.text[this.state.context.lang])}` : ""}
+            </div>
+            </div>
+            ${props.imageR?.src != void 0 ? `
+            <figure class="media-right">
+            <p class="image is-64x64">
+            <img src="${props.imageR.src}">
+            </p>
+            </figure>` : ""}
+        </div>
+    </div>
+    `
+      );
+    }
+    #getItems() {
+      let items = "";
+      if (this.state.mediaObjects?.items != void 0) {
+        this.state.mediaObjects?.items.forEach((el) => {
+          items += this.#mediaObject(el);
+        });
+      }
+      return items;
+    }
+    render() {
+      this.innerHTML = /* html */
+      `
+        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+            <div class="container my-4">
+                ${this.getTitles()}
+                <div ${this.getClasses(["fixed-grid"], this.state?.grid?.classList)} >
+                    <div class="grid">
+                        ${this.#getItems()}
+                    </div>
+                </div>
+                ${this.state.buttons != void 0 ? this.buttonsRender(this.state.buttons) : ""}
+            </div>
+        </section>
+        `;
+      this.addEvents();
+    }
+  };
+  customElements.define("media-grid", MediaGrid);
 
   // src/components/MediaList.js
   var MediaList = class extends AppElement {
