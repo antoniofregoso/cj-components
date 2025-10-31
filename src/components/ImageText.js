@@ -6,8 +6,8 @@ export class ImageText extends AppElement {
 
     #default = {
         imagePosition:"left",
-        textWidth:"is-half",
         imageWidth:"is-half",
+        textWidth:"",
         context:{
         lang:"en"
         }
@@ -43,7 +43,7 @@ export class ImageText extends AppElement {
             </div>
             `
         let text = /* html */`  
-        <div ${this.getClasses(["column"], this.state.textWidth)}>
+        <div ${this.getClasses(["column"], [this.state.textWidth])}>
             <div  class="p-4"> 
                 ${this.state.description?.text[this.state.context.lang]!=undefined?`
                 <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
@@ -56,7 +56,7 @@ export class ImageText extends AppElement {
         <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container py-4">
                 ${this.getTitles()}
-            <div class="columns is-vcentered is-gapless my-0"> 
+            <div class="columns is-vcentered is-centered is-gapless my-0"> 
                 ${this.state.imagePosition==='right'?text:img}
                 ${this.state.imagePosition==='right'?img:text}
             </div>              

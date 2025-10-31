@@ -5,6 +5,7 @@ export * from './components/HeroBanner';
 export * from './components/ImageBanner';
 export * from './components/ImageText';
 export * from './components/LevelCentered';
+export * from './components/MediaGrid';
 export * from './components/MediaList';
 export * from './components/ModalBox';
 export * from './components/OmnichannelChat';
