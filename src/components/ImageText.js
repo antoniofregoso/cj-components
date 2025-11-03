@@ -48,7 +48,8 @@ export class ImageText extends AppElement {
                 ${this.state.description?.text[this.state.context.lang]!=undefined?`
                 <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
                     ${this.md.render(this.state.description?.text[this.state.context.lang])}
-                </div>`:''}            
+                </div>`:''}   
+                ${this.state.description?.buttons!=undefined?this.buttonsRender(this.state.description.buttons):''}  
             </div>
         </div>
             `

@@ -30,21 +30,19 @@ export class CtaBanner extends AppElement {
     	this.innerHTML =  /* html */`
       <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container py-4">
-              <div class="columns is-vcentered">
+              <div class="columns is-vcentered is-centered">
                 <div class="column ${this.state.content?.size!=undefined?this.state.content.size:'is-6'}">
-                   <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
-                   ${this.state.content?.text[this.state.context.lang]!=undefined?this.md.render(this.state.content.text[this.state.context.lang]):""}
-                    </div>
+                  <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
+                  ${this.state.content?.text[this.state.context.lang]!=undefined?this.md.render(this.state.content.text[this.state.context.lang]):""}
+                  ${this.state.content?.buttons!=undefined?this.buttonsRender(this.state.content.buttons):''} 
+                  </div>
                 </div>
-                <div class="column">
-                    ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
-                </div>
+                ${this.state.buttons!=undefined?`<div class="column">${this.buttonsRender(this.state.buttons)}</div>`:''}                 
               </div>
             </div>
     </section>
       `;
-    	this.addEvents();
-
+    this.addEvents();
     }
 
 }

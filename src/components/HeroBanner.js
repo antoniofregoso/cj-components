@@ -59,6 +59,14 @@ scrollDown(){
 
 #icon = icon(faCircleArrowDown, {classes: ['fa-3x',  this.state.scrollButton?.color!=undefined?this.state.scrollButton.color:'has-text-white']}).html[0];
 
+#getVideos(videos){
+    let items = '';
+    videos.forEach(video => {
+      const type = video.match(/\.([0-9a-z]+)(?=[?#])?$/i) ? video.match(/\.([0-9a-z]+)(?=[?#])?$/i)[1] : '';
+      items += `<source src="${video}" type="video/${type}" />\n`;
+    })
+    return items;
+  };
 
 render(){
     this.innerHTML =  /* html */`
@@ -69,8 +77,46 @@ render(){
       vertical-align: -.125em;
       text-shadow: 1px 1px 2px black;
     }
+    ${this.state.backgroundVideo?.videos!=undefined?`
+      #${this.state.id}-content {
+        position: relative;
+        overflow: hidden;
+      }
+      #${this.state.id}-vid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0; 
+      }
+      #${this.state.id}-vid video {
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+      }
+      `:''}
   </style>
-  <div ${`id="${this.state.id}-content"`} ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+  <div id="${this.state.id}-content" ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+    ${this.state.backgroundVideo?.videos!=undefined?`
+    <div id="${this.state.id}-vid">
+    <video
+      poster="${this.state?.backgroundVideo?.poster?this.state.backgroundVideo.poster:''}"
+      id="bgvid"
+      playsinline
+      autoplay
+      muted
+      loop
+    >
+    ${this.#getVideos(this.state.backgroundVideo.videos)}
+      </video>
+    </div>`:''}
     <div class="hero-body ${this.state.alignment}">
       <div ${this.getClasses(["container"], this.state.body?.classList)}>
         ${this.state.caption?.text[this.state.context.lang]!=undefined?`

@@ -46,17 +46,21 @@ export class LevelCentered extends AppElement {
                         <div ${this.getClasses(["icon", "title"], item.icon?.classList)} 
                             ${this.setAnimation(item.icon?.animation)}>
                             ${this.#getIcon(item.icon.prefix,item.icon.name)}
-                        </div>                    
-                        `:''}                    
-                    <p ${this.getClasses(["heading"], item.heading?.classList)}
-                        ${this.setAnimation(item.heading?.animation)}>
-                        ${item.heading?.text[this.state.context.lang]!=undefined?item.heading.text[this.state.context.lang]:''}
-                    </p>
-                    <p ${this.getClasses(["title"], item.title?.classList)}
-                        ${this.setAnimation(item.title?.animation)}>
-                        ${item.title?.text[this.state.context.lang]!=undefined?item.title.text[this.state.context.lang]:''}
-                        
-                    </p>
+                        </div>`:''}
+                    ${item.image?.src!=undefined?`
+                        <figure ${this.getClasses(["image"], item.image?.classList)}>
+                            <img src="${item.image.src}" />
+                        </figure>`:''}
+                    ${item.heading!=undefined?`
+                        <p ${this.getClasses(["heading"], item.heading?.classList)}
+                            ${this.setAnimation(item.heading?.animation)}>
+                            ${item.heading?.text[this.state.context.lang]!=undefined?item.heading.text[this.state.context.lang]:''}
+                        </p>`:''}
+                    ${item.title!=undefined?`
+                        <p ${this.getClasses(["title"], item.title?.classList)}
+                            ${this.setAnimation(item.title?.animation)}>
+                            ${item.title?.text[this.state.context.lang]!=undefined?item.title.text[this.state.context.lang]:''}                            
+                        </p>`:''}
                 </div>
             </div>`;
         });

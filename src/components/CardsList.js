@@ -99,6 +99,7 @@ export class CardsList extends AppElement {
                 <div class="columns is-multiline mx-4">
                     ${this.#getCards()}
                 </div>
+                ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
             </div>
         </section>`
         this.addEvents();

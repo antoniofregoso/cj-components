@@ -18,17 +18,17 @@ export class TextAccordion extends AppElement {
 
     static get observedAttributes() {
         return [];
-      }
-      
+    }
+
     attributeChangedCallback(name, old, now) {
         this.render()
-      }
+    }
 
     handleEvent(event){
         if (event.type === "click") {
             if (event.target.tagName==='BUTTON'){
                 if(this.state.buttons.eventName!=undefined){                 
-                  this.eventName = this.state.buttons.eventName
+                    this.eventName = this.state.buttons.eventName
                 }
                 const clickFunnel = new CustomEvent(this.eventName,{
                 detail:{source:event.target.id},
@@ -55,9 +55,9 @@ export class TextAccordion extends AppElement {
         let buttons = this.querySelectorAll("button");
         let items = this.querySelectorAll(".message-header");
         if (buttons.length>0){
-          buttons.forEach((item)=>{
+            buttons.forEach((item)=>{
             item.addEventListener("click",this)
-          });    
+            });    
         }
         if (items.length>0){
             items.forEach((item)=>{
@@ -114,6 +114,7 @@ export class TextAccordion extends AppElement {
                     ${this.#getItems()}
                 </div>
                 ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
+                ${this.state.epilogue?.text[this.state.context.lang]!=undefined?`<div ${this.getClasses(["content"], this.state.epilogue?.classList)}>${this.md.render(this.state.epilogue.text[this.state.context.lang])}</div>`:''}
             </div>
         </section>
         `
