@@ -17128,6 +17128,7 @@
                 <div class="columns is-multiline mx-4">
                     ${this.#getCards()}
                 </div>
+                ${this.state.buttons != void 0 ? this.buttonsRender(this.state.buttons) : ""} 
             </div>
         </section>`;
       this.addEvents();
@@ -17159,15 +17160,14 @@
       `
       <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container py-4">
-              <div class="columns is-vcentered">
+              <div class="columns is-vcentered is-centered">
                 <div class="column ${this.state.content?.size != void 0 ? this.state.content.size : "is-6"}">
-                   <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
-                   ${this.state.content?.text[this.state.context.lang] != void 0 ? this.md.render(this.state.content.text[this.state.context.lang]) : ""}
-                    </div>
+                  <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
+                  ${this.state.content?.text[this.state.context.lang] != void 0 ? this.md.render(this.state.content.text[this.state.context.lang]) : ""}
+                  ${this.state.content?.buttons != void 0 ? this.buttonsRender(this.state.content.buttons) : ""} 
+                  </div>
                 </div>
-                <div class="column">
-                    ${this.state.buttons != void 0 ? this.buttonsRender(this.state.buttons) : ""} 
-                </div>
+                ${this.state.buttons != void 0 ? `<div class="column">${this.buttonsRender(this.state.buttons)}</div>` : ""}                 
               </div>
             </div>
     </section>
@@ -17384,6 +17384,15 @@
       });
     }
     #icon = icon(faCircleArrowDown, { classes: ["fa-3x", this.state.scrollButton?.color != void 0 ? this.state.scrollButton.color : "has-text-white"] }).html[0];
+    #getVideos(videos) {
+      let items = "";
+      videos.forEach((video) => {
+        const type = video.match(/\.([0-9a-z]+)(?=[?#])?$/i) ? video.match(/\.([0-9a-z]+)(?=[?#])?$/i)[1] : "";
+        items += `<source src="${video}" type="video/${type}" />
+`;
+      });
+      return items;
+    }
     render() {
       this.innerHTML = /* html */
       `
@@ -17394,8 +17403,46 @@
       vertical-align: -.125em;
       text-shadow: 1px 1px 2px black;
     }
+    ${this.state.backgroundVideo?.videos != void 0 ? `
+      #${this.state.id}-content {
+        position: relative;
+        overflow: hidden;
+      }
+      #${this.state.id}-vid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0; 
+      }
+      #${this.state.id}-vid video {
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+      }
+      ` : ""}
   </style>
-  <div ${`id="${this.state.id}-content"`} ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+  <div id="${this.state.id}-content" ${this.getClasses(["hero"], this.state.classList)}  ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
+    ${this.state.backgroundVideo?.videos != void 0 ? `
+    <div id="${this.state.id}-vid">
+    <video
+      poster="${this.state?.backgroundVideo?.poster ? this.state.backgroundVideo.poster : ""}"
+      id="bgvid"
+      playsinline
+      autoplay
+      muted
+      loop
+    >
+    ${this.#getVideos(this.state.backgroundVideo.videos)}
+      </video>
+    </div>` : ""}
     <div class="hero-body ${this.state.alignment}">
       <div ${this.getClasses(["container"], this.state.body?.classList)}>
         ${this.state.caption?.text[this.state.context.lang] != void 0 ? `
@@ -17723,7 +17770,8 @@
                 ${this.state.description?.text[this.state.context.lang] != void 0 ? `
                 <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
                     ${this.md.render(this.state.description?.text[this.state.context.lang])}
-                </div>` : ""}            
+                </div>` : ""}   
+                ${this.state.description?.buttons != void 0 ? this.buttonsRender(this.state.description.buttons) : ""}  
             </div>
         </div>
             `
@@ -18960,17 +19008,21 @@
                         <div ${this.getClasses(["icon", "title"], item.icon?.classList)} 
                             ${this.setAnimation(item.icon?.animation)}>
                             ${this.#getIcon(item.icon.prefix, item.icon.name)}
-                        </div>                    
-                        ` : ""}                    
-                    <p ${this.getClasses(["heading"], item.heading?.classList)}
-                        ${this.setAnimation(item.heading?.animation)}>
-                        ${item.heading?.text[this.state.context.lang] != void 0 ? item.heading.text[this.state.context.lang] : ""}
-                    </p>
-                    <p ${this.getClasses(["title"], item.title?.classList)}
-                        ${this.setAnimation(item.title?.animation)}>
-                        ${item.title?.text[this.state.context.lang] != void 0 ? item.title.text[this.state.context.lang] : ""}
-                        
-                    </p>
+                        </div>` : ""}
+                    ${item.image?.src != void 0 ? `
+                        <figure ${this.getClasses(["image"], item.image?.classList)}>
+                            <img src="${item.image.src}" />
+                        </figure>` : ""}
+                    ${item.heading != void 0 ? `
+                        <p ${this.getClasses(["heading"], item.heading?.classList)}
+                            ${this.setAnimation(item.heading?.animation)}>
+                            ${item.heading?.text[this.state.context.lang] != void 0 ? item.heading.text[this.state.context.lang] : ""}
+                        </p>` : ""}
+                    ${item.title != void 0 ? `
+                        <p ${this.getClasses(["title"], item.title?.classList)}
+                            ${this.setAnimation(item.title?.animation)}>
+                            ${item.title?.text[this.state.context.lang] != void 0 ? item.title.text[this.state.context.lang] : ""}                            
+                        </p>` : ""}
                 </div>
             </div>`;
         });
@@ -19512,6 +19564,7 @@
                     ${this.#getItems()}
                 </div>
                 ${this.state.buttons != void 0 ? this.buttonsRender(this.state.buttons) : ""} 
+                ${this.state.epilogue?.text[this.state.context.lang] != void 0 ? `<div ${this.getClasses(["content"], this.state.epilogue?.classList)}>${this.md.render(this.state.epilogue.text[this.state.context.lang])}</div>` : ""}
             </div>
         </section>
         `;
