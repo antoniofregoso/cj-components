@@ -18,7 +18,6 @@ constructor(props={}){
     this.state =this.initState(this.#default,props);
     this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
     this.md = new Remarkable();
-   
 }  
 
 static get observedAttributes() {

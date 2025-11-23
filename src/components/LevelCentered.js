@@ -39,7 +39,7 @@ export class LevelCentered extends AppElement {
         let itemsHtml = ``;
         if (this.state.items?.length>0){
             this.state.items.forEach(item=>{
-            itemsHtml+= /* html */`         
+            itemsHtml+= /*html */`         
             <div class="level-item has-text-centered">
                 <div>
                     ${item.icon?.name!=undefined?`
