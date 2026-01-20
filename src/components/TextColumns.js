@@ -31,11 +31,13 @@ export class TextColumns extends AppElement {
                     <div class="column">
                         <div ${this.getClasses(["content"], this.state.leftColumn?.classList)} ${this.setAnimation(this.state.leftColumn?.animation)}>
                             ${this.md.render(this.state.leftColumn?.text[this.state.context.lang])}
+                            ${this.state.leftColumn?.buttons != undefined ? this.buttonsRender(this.state.leftColumn.buttons) : ''}
                         </div>
                     </div> 
                     <div class="column">
                         <div ${this.getClasses(["content"], this.state.rightColumn?.classList)} ${this.setAnimation(this.state.rightColumn?.animation)}>
                             ${this.md.render(this.state.rightColumn?.text[this.state.context.lang])}
+                            ${this.state.rightColumn?.buttons != undefined ? this.buttonsRender(this.state.rightColumn.buttons) : ''}
                         </div>
                     </div> 
                 </div>

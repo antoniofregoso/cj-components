@@ -22,8 +22,12 @@ export class ModalBox extends AppElement {
       }
 
     attributeChangedCallback(name, old, now) {
-        if (name==='active'&&now===''){
-            this.querySelector('.modal').classList.add('is-active')
+        if (name === 'active') {
+            if (now !== null) {
+                this.querySelector('.modal').classList.add('is-active');
+            } else {
+                this.querySelector('.modal').classList.remove('is-active');
+            }
         }
       }
 

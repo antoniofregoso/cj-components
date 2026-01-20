@@ -96,7 +96,7 @@ export class CardsList extends AppElement {
         <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
             <div class="container py-4">
                 ${this.getTitles(this.state)}
-                <div class="columns is-multiline mx-4">
+                <div class="columns is-multiline mx-4 is-centered">
                     ${this.#getCards()}
                 </div>
                 ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
