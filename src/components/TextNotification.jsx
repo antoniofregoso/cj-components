@@ -1,3 +1,4 @@
+import { render } from "preact";
 import { AppElement } from "@customerjourney/cj-core";
 import { Remarkable } from "remarkable";
 
@@ -21,7 +22,7 @@ export class TextNotification extends AppElement {
     static get observedAttributes() {
         return [];
       }
-      
+
     attributeChangedCallback(name, old, now) {
         this.render()
       }
@@ -42,16 +43,17 @@ export class TextNotification extends AppElement {
     }
 
     render(){
-      this.innerHTML =  /* html */`
-      <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
-        <div class="container">
-            <div ${this.getClasses(["notification"], this.state.classList)} ${this.setAnimation(this.state?.animation)}>
-            <button class="delete"></button>
-            ${this.md.render(this.state.message?.text[this.state.context.lang])}
-            </div>
-        </div>
-      </section>
-      `;
+      render(
+          <section class={this.getClassNames(["section"], this.state?.classList)} {...this.getAnimationProps(this.state.animation)} style={this.getBackgroundStyle()}>
+              <div class="container">
+                  <div class={this.getClassNames(["notification"], this.state.classList)} {...this.getAnimationProps(this.state?.animation)}>
+                      <button class="delete"></button>
+                      <div dangerouslySetInnerHTML={{ __html: this.md.render(this.state.message?.text[this.state.context.lang]) }} />
+                  </div>
+              </div>
+          </section>,
+          this
+      );
       this.addEvents();
   }
 

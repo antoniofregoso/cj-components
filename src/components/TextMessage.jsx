@@ -1,3 +1,4 @@
+import { render } from "preact";
 import { AppElement } from "@customerjourney/cj-core";
 import { Remarkable } from "remarkable";
 
@@ -6,7 +7,7 @@ export class TextMessage extends AppElement {
 
     #default = {
         context:{
-            lang:"en"        
+            lang:"en"
     }
 }
 
@@ -21,7 +22,7 @@ export class TextMessage extends AppElement {
     static get observedAttributes() {
         return [];
       }
-      
+
     attributeChangedCallback(name, old, now) {
         this.render()
       }
@@ -42,25 +43,24 @@ export class TextMessage extends AppElement {
     }
 
     render(){
-    	this.innerHTML =  /* html */`
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
-            <div class="container my-4">
-                <div class="columns is-centered">
-                    <div class="column ${this.state?.size!=undefined?this.state.size:'is-4'}">
-                        <div ${this.getClasses(["message"], this.state.classList)} ${this.setAnimation(this.state?.animation)}>
-                            <div class="message-header">
-                                <p>${this.md.render(this.state.header?.text[this.state.context.lang])}</p>
-                                ${this.state.erasable===true?'<button class="delete" aria-label="delete"></button>':''}
-                            </div>
-                            <div class="message-body">
-                                ${this.md.render(this.state.body?.text[this.state.context.lang])}
+        render(
+            <section class={this.getClassNames(["section"], this.state?.classList)} {...this.getAnimationProps(this.state.animation)} style={this.getBackgroundStyle()}>
+                <div class="container my-4">
+                    <div class="columns is-centered">
+                        <div class={`column ${this.state?.size!=undefined?this.state.size:'is-4'}`}>
+                            <div class={this.getClassNames(["message"], this.state.classList)} {...this.getAnimationProps(this.state?.animation)}>
+                                <div class="message-header">
+                                    <p dangerouslySetInnerHTML={{ __html: this.md.render(this.state.header?.text[this.state.context.lang]) }} />
+                                    {this.state.erasable===true && <button class="delete" aria-label="delete"></button>}
+                                </div>
+                                <div class="message-body" dangerouslySetInnerHTML={{ __html: this.md.render(this.state.body?.text[this.state.context.lang]) }} />
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        `;
+            </section>,
+            this
+        );
         if (this.state.erasable===true){
             this.addEvents();
         }

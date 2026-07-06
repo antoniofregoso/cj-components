@@ -1,3 +1,4 @@
+import { render } from "preact";
 import { AppElement } from "@customerjourney/cj-core";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faClock, faCreditCard, faCalendarCheck, faCalendarPlus } from '@fortawesome/free-regular-svg-icons';
@@ -70,23 +71,23 @@ export class WebinarInvitation extends AppElement {
                 this.generateICal();
             }
         }}
- 
+
 
 
     getDate(){
         if (this.state.startsOn?.date!=undefined){
             let optionsDate = '';
             if (this.state.startsOn?.format === "L"){
-                optionsDate = { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
+                optionsDate = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
                     day: 'numeric',
                 };
             }else {
-                optionsDate = { 
-                    year: 'numeric', 
-                    month: 'long', 
+                optionsDate = {
+                    year: 'numeric',
+                    month: 'long',
                     day: 'numeric'
                 };
             }
@@ -108,8 +109,8 @@ export class WebinarInvitation extends AppElement {
         let eventDescription = this.state.description[this.state.context.lang]!=undefined?this.state.description[this.state.context.lang]:'';
         let startDate =  new Date(this.state.startsOn.date);
         let endDate =    new Date(this.state.endOn.date);
-       
-        let iCalContent = 
+
+        let iCalContent =
         "BEGIN:VCALENDAR\n" +
         "VERSION:2.0\n" +
         "PRODID:-//My Company//EN\n" +
@@ -133,14 +134,14 @@ export class WebinarInvitation extends AppElement {
         var hours = pad(date.getUTCHours());
         var minutes = pad(date.getUTCMinutes());
         var seconds = pad(date.getUTCSeconds());
-      
+
         return year + month + day + "T" + hours + minutes + seconds + "Z";
     }
 
 
 
     #downloadICal(content){
-        var filename = "evento.ics";      
+        var filename = "evento.ics";
         var element = document.createElement("a");
         element.setAttribute("href", "data:text/calendar;charset=utf-8," + encodeURIComponent(content));
         element.setAttribute("download", filename);
@@ -154,67 +155,66 @@ export class WebinarInvitation extends AppElement {
     }
 
     render(){
-    this.innerHTML =  /* html */`
-    <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
-        <div class="section py-2">
-            <div class="container">
-                <div class="columns">
-                    <div class="column">
-                        <div class="media" ${this.setAnimation(this.state.startsOn.animation)}>
-                            <div class="media-left">
-                            <span class="icon is-size-2 ">
-                                    ${icon(faCalendarCheck ).html[0]}
-                                </span>
-                            </div>
-                            <div class="media-content">
-                            <h2 class="is-size-4">${this.state.startsOn.title?.text[this.state.context.lang]}</h2>
-                                <div class="content">
-                                    <h3>${this.getDate()}</h3>
-                                    <button  ${this.getClasses(["button"], this.state.iCal?.classList)} id="ical-request">
-                                        <span class="icon is-small">${icon(faCalendarPlus).html[0]}</span>
-                                        <span>${this.state.iCal?.text[this.state.context.lang]}</span>
-                                    </button>
+    render(
+        <section class={this.getClassNames(["section"], this.state?.classList)} {...this.getAnimationProps(this.state.animation)} style={this.getBackgroundStyle()}>
+            <div class="section py-2">
+                <div class="container">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="media" {...this.getAnimationProps(this.state.startsOn.animation)}>
+                                <div class="media-left">
+                                    <span class="icon is-size-2" dangerouslySetInnerHTML={{ __html: icon(faCalendarCheck).html[0] }} />
+                                </div>
+                                <div class="media-content">
+                                    <h2 class="is-size-4">{this.state.startsOn.title?.text[this.state.context.lang]}</h2>
+                                    <div class="content">
+                                        <h3>{this.getDate()}</h3>
+                                        <button class={this.getClassNames(["button"], this.state.iCal?.classList)} id="ical-request">
+                                            <span class="icon is-small" dangerouslySetInnerHTML={{ __html: icon(faCalendarPlus).html[0] }} />
+                                            <span>{this.state.iCal?.text[this.state.context.lang]}</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="column">
-                        <div class="media" ${this.setAnimation(this.state.duration.animation)}>
-                            <div class="media-left">
-                                <span class="icon is-size-2 ">
-                                    ${icon(faClock ).html[0]}
-                                </span>
-                            </div>
-                            <div class="media-content ">
-                            <h1 class="is-size-4">${this.state.duration.title?.text[this.state.context.lang]}</h1>
-                                <div class="content">
-                                    ${this.state.duration?.text?.[this.state.context.lang]!=undefined?this.md.render(this.state.duration.text[this.state.context.lang]):''}
+                        <div class="column">
+                            <div class="media" {...this.getAnimationProps(this.state.duration.animation)}>
+                                <div class="media-left">
+                                    <span class="icon is-size-2" dangerouslySetInnerHTML={{ __html: icon(faClock).html[0] }} />
+                                </div>
+                                <div class="media-content">
+                                    <h1 class="is-size-4">{this.state.duration.title?.text[this.state.context.lang]}</h1>
+                                    <div class="content">
+                                        {this.state.duration?.text?.[this.state.context.lang]!=undefined &&
+                                            <span dangerouslySetInnerHTML={{ __html: this.md.render(this.state.duration.text[this.state.context.lang]) }} />
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="column">
-                        <div class="media" ${this.setAnimation(this.state.programFee.animation)}>
-                            <div class="media-left">
-                            <span class="icon is-size-2 ">
-                                    ${icon(faCreditCard ).html[0]}
-                                </span>
-                            </div>
-                            <div class="media-content">
-                            <h1 class="is-size-4">${this.state.programFee.title?.text[this.state.context.lang]}</h1>
-                                <div class="content">
-                                    ${this.state.programFee?.price!=undefined?`<h3>${this.state.programFee.price}</h3>`:''}
-                                    ${this.state.programFee?.text?.[this.state.context.lang]!=undefined?this.md.render(this.state.programFee?.text[this.state.context.lang]):''}
+                        <div class="column">
+                            <div class="media" {...this.getAnimationProps(this.state.programFee.animation)}>
+                                <div class="media-left">
+                                    <span class="icon is-size-2" dangerouslySetInnerHTML={{ __html: icon(faCreditCard).html[0] }} />
+                                </div>
+                                <div class="media-content">
+                                    <h1 class="is-size-4">{this.state.programFee.title?.text[this.state.context.lang]}</h1>
+                                    <div class="content">
+                                        {this.state.programFee?.price!=undefined && <h3>{this.state.programFee.price}</h3>}
+                                        {this.state.programFee?.text?.[this.state.context.lang]!=undefined &&
+                                            <span dangerouslySetInnerHTML={{ __html: this.md.render(this.state.programFee?.text[this.state.context.lang]) }} />
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        </section>
-        `        
-        this.addEvents();
+            </section>,
+        this
+    )
+    this.addEvents();
     }
 }
 

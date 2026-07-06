@@ -1,18 +1,21 @@
+import { render } from "preact";
 import { AppElement } from "@customerjourney/cj-core";
 import { Remarkable } from "remarkable";
 
 
 export class TextAccordion extends AppElement {
-    
+
     #default = {
         context:{
             lang:"en"
-        }  
+        }
     }
 
     constructor(props={}){
         super();
         this.eventName = "user:click-text-accordion";
+        this.state = this.initState(this.#default, props);
+        this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.md = new Remarkable();
     }
 
@@ -27,7 +30,7 @@ export class TextAccordion extends AppElement {
     handleEvent(event){
         if (event.type === "click") {
             if (event.target.tagName==='BUTTON'){
-                if(this.state.buttons.eventName!=undefined){                 
+                if(this.state.buttons.eventName!=undefined){
                     this.eventName = this.state.buttons.eventName
                 }
                 const clickFunnel = new CustomEvent(this.eventName,{
@@ -40,7 +43,7 @@ export class TextAccordion extends AppElement {
                 let items = this.querySelectorAll(".message");
                 items.forEach((item)=>{
                     item.querySelector(".message-header  span").innerHTML= "&plus;";
-                    let content = item.querySelector(".message-body");                    
+                    let content = item.querySelector(".message-body");
                     content.classList.add("is-hidden")
                 });
                 event.target.querySelector("span").innerHTML= "&minus;";
@@ -57,7 +60,7 @@ export class TextAccordion extends AppElement {
         if (buttons.length>0){
             buttons.forEach((item)=>{
             item.addEventListener("click",this)
-            });    
+            });
         }
         if (items.length>0){
             items.forEach((item)=>{
@@ -85,39 +88,38 @@ export class TextAccordion extends AppElement {
     }
 
     #getItems(){
-        let items= '';
-        if (this.state.accordion?.items.length>0){
-            this.state.accordion.items.forEach(el=>{
-                items += `
-                <div ${this.getClasses(["message", "mb-1"], this.state.accordion?.classList)}>
-                    <div class="message-header">
-                        ${el.header?.text[this.state.context.lang]!=undefined?el.header.text[this.state.context.lang]:''}
-                        <span class="accordion-icon" aria-hidden="true">&plus;</span>
-                    </div>
-                    <div class="message-body is-hidden">
-                        ${el.content?.text[this.state.context.lang]!=undefined?this.md.render(el.content.text[this.state.context.lang]):''}
-                    </div>
+        if (!(this.state.accordion?.items.length>0)) return [];
+        return this.state.accordion.items.map((el, i) => (
+            <div class={this.getClassNames(["message", "mb-1"], this.state.accordion?.classList)} key={i}>
+                <div class="message-header">
+                    {el.header?.text[this.state.context.lang]!=undefined?el.header.text[this.state.context.lang]:''}
+                    <span class="accordion-icon" aria-hidden="true">&plus;</span>
                 </div>
-                `
-            })
-
-        }
-        return items
+                <div class="message-body is-hidden">
+                    {el.content?.text[this.state.context.lang]!=undefined &&
+                        <span dangerouslySetInnerHTML={{ __html: this.md.render(el.content.text[this.state.context.lang]) }} />
+                    }
+                </div>
+            </div>
+        ));
     }
 
     render(){
-        this.innerHTML =  /* html */`
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
-            <div class="container py-4">
-                ${this.getTitles()}
-                <div ${this.getClasses(["content"], this.state.content?.classList)} ${this.setAnimation(this.state.content?.animation)}>
-                    ${this.#getItems()}
+        render(
+            <section class={this.getClassNames(["section"], this.state?.classList)} {...this.getAnimationProps(this.state.animation)} style={this.getBackgroundStyle()}>
+                <div class="container py-4">
+                    {this.getTitlesJSX()}
+                    <div class={this.getClassNames(["content"], this.state.content?.classList)} {...this.getAnimationProps(this.state.content?.animation)}>
+                        {this.#getItems()}
+                    </div>
+                    {this.state.buttons!=undefined && this.buttonsRenderJSX(this.state.buttons)}
+                    {this.state.epilogue?.text[this.state.context.lang]!=undefined &&
+                        <div class={this.getClassNames(["content"], this.state.epilogue?.classList)} dangerouslySetInnerHTML={{ __html: this.md.render(this.state.epilogue.text[this.state.context.lang]) }} />
+                    }
                 </div>
-                ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''} 
-                ${this.state.epilogue?.text[this.state.context.lang]!=undefined?`<div ${this.getClasses(["content"], this.state.epilogue?.classList)}>${this.md.render(this.state.epilogue.text[this.state.context.lang])}</div>`:''}
-            </div>
-        </section>
-        `
+            </section>,
+            this
+        )
         this.#SetAnimation()
         this.addEvents();
     }

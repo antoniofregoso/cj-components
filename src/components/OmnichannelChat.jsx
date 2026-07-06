@@ -1,3 +1,4 @@
+import { render } from "preact";
 import { AppElement, slugify } from "@customerjourney/cj-core";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faRobot, faCircleXmark, faCommentDots, faFaceSmile} from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +19,7 @@ export class OmnichannelChat extends AppElement {
         this.state =this.initState(this.#default,props);
         this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
         this.setAttribute("value",this.state.value||'closed');
-        this.attachShadow({ mode: "open" }); 
+        this.attachShadow({ mode: "open" });
     }
 
     #styles = /* CSS */ `
@@ -53,7 +54,7 @@ export class OmnichannelChat extends AppElement {
         width: 70px;
         overflow: hidden;
         transition: max-height 0.3s;
-        } 
+        }
         .chat-content ul {
             list-style: none;
             padding: 0;
@@ -120,23 +121,65 @@ export class OmnichannelChat extends AppElement {
         }
     }
 
-    
+
     render(){
-        this.shadowRoot.innerHTML =  /* html */`
-        <style>
-            ${this.#styles}
-        </style>
-        <div class="chat-content" id="chatContent" style="display: none;">
-        <ul>
-            ${this.state.whatsapp?.phone===undefined?``:`<li id="chatWhatsapp"><a target="_blank" href="https://wa.me/${this.state.whatsapp.phone}?text=${this.state.whatsapp?.text===undefined?``:slugify(this.state.whatsapp.text[this.state.context.lang])}" >${icon(faWhatsapp, { transform: { size: 10 }, styles: { 'color': '#25D366' }}).html[0]}</a></li>`}
-            ${this.state.messenger?.pagename===undefined?``:`<li id="chatMessenger"><a target="_blank" href="https://m.me/${this.state.messenger.pagename}?text=${this.state.messenger?.text===undefined?``:slugify(this.state.messenger.text[this.state.context.lang])}" id="chatMessenger">${ icon(faFacebookMessenger, { transform: { size: 10 }, styles: { 'color': '#3B5998' }}).html[0]}</a></li>`}
-            ${this.state.instagram?.username===undefined?``:`<li id="chatInstagram"><a target="_blank" href="https://ig.me/m/${this.state.instagram.username}?text=${this.state.instagram?.text===undefined?``:slugify(this.state.instagram.text[this.state.context.lang])}">${ icon(faFacebookMessenger, { transform: { size: 10 }, styles: { 'color': '#833AB4' }}).html[0]}</a></li>`}
-            ${this.state.telegram?.username===undefined?``:`<li id="chatTelegram"><a target="_blank" href="https://t.me/#{website.telegram_channel}?text=${this.state.telegram?.text===undefined?``:slugify(this.state.telegram.text[this.state.context.lang])}">${ icon(faTelegram, { transform: { size: 10 }, styles: { 'color': '#229ED9' }}).html[0]}</a></li>`}
-            ${this.state.ai?.eventName===undefined?``:`<li ><a  href="#" id="chatAI">${icon(faRobot, { transform: { size: 10 }, styles: { 'color': '#220055' }}).html[0]}</a></li>`}
-        </ul>
-        </div>
-        <div class="chat-toggle" id="chatToggle" >${icon(faCommentDots, { transform: { size: 12 }, styles: { 'color': this.state.color }}).html[0]}</div>        
-        `
+        render(
+            <>
+                <style>{this.#styles}</style>
+                <div class="chat-content" id="chatContent" style="display: none;">
+                    <ul>
+                        {this.state.whatsapp?.phone!==undefined &&
+                            <li id="chatWhatsapp">
+                                <a
+                                    target="_blank"
+                                    href={`https://wa.me/${this.state.whatsapp.phone}?text=${this.state.whatsapp?.text===undefined?``:slugify(this.state.whatsapp.text[this.state.context.lang])}`}
+                                    dangerouslySetInnerHTML={{ __html: icon(faWhatsapp, { transform: { size: 10 }, styles: { 'color': '#25D366' }}).html[0] }}
+                                />
+                            </li>
+                        }
+                        {this.state.messenger?.pagename!==undefined &&
+                            <li id="chatMessenger">
+                                <a
+                                    target="_blank"
+                                    href={`https://m.me/${this.state.messenger.pagename}?text=${this.state.messenger?.text===undefined?``:slugify(this.state.messenger.text[this.state.context.lang])}`}
+                                    id="chatMessenger"
+                                    dangerouslySetInnerHTML={{ __html: icon(faFacebookMessenger, { transform: { size: 10 }, styles: { 'color': '#3B5998' }}).html[0] }}
+                                />
+                            </li>
+                        }
+                        {this.state.instagram?.username!==undefined &&
+                            <li id="chatInstagram">
+                                <a
+                                    target="_blank"
+                                    href={`https://ig.me/m/${this.state.instagram.username}?text=${this.state.instagram?.text===undefined?``:slugify(this.state.instagram.text[this.state.context.lang])}`}
+                                    dangerouslySetInnerHTML={{ __html: icon(faFacebookMessenger, { transform: { size: 10 }, styles: { 'color': '#833AB4' }}).html[0] }}
+                                />
+                            </li>
+                        }
+                        {this.state.telegram?.username!==undefined &&
+                            <li id="chatTelegram">
+                                <a
+                                    target="_blank"
+                                    href={`https://t.me/#{website.telegram_channel}?text=${this.state.telegram?.text===undefined?``:slugify(this.state.telegram.text[this.state.context.lang])}`}
+                                    dangerouslySetInnerHTML={{ __html: icon(faTelegram, { transform: { size: 10 }, styles: { 'color': '#229ED9' }}).html[0] }}
+                                />
+                            </li>
+                        }
+                        {this.state.ai?.eventName!==undefined &&
+                            <li>
+                                <a href="#" id="chatAI" dangerouslySetInnerHTML={{ __html: icon(faRobot, { transform: { size: 10 }, styles: { 'color': '#220055' }}).html[0] }} />
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div
+                    class="chat-toggle"
+                    id="chatToggle"
+                    dangerouslySetInnerHTML={{ __html: icon(faCommentDots, { transform: { size: 12 }, styles: { 'color': this.state.color }}).html[0] }}
+                />
+            </>,
+            this.shadowRoot
+        );
         this.addEvents();
     }
 

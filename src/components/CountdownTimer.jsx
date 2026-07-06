@@ -1,3 +1,4 @@
+import { render } from "preact";
 import { AppElement } from "@customerjourney/cj-core";
 
 export class CountdownTimer extends AppElement {
@@ -14,28 +15,28 @@ export class CountdownTimer extends AppElement {
                 es:"días",
                 en:"days",
                 fr:"jours"
-            } 
+            }
         },
         hours:{
             text:{
                 es:"horas",
                 en:"hours",
                 fr:"heures"
-            } 
+            }
         },
         minutes:{
             text:{
                 es:"minutos",
                 en:"minutes",
                 fr:"minutes"
-            } 
+            }
         },
         seconds:{
             text:{
                 es:"segundos",
                 en:"seconds",
                 fr:"secondes"
-            } 
+            }
         },
         message:{
             text:{
@@ -84,7 +85,7 @@ export class CountdownTimer extends AppElement {
     }
 
     start(){
-        if (this.timeRemaining > 0){        
+        if (this.timeRemaining > 0){
         this.setAttribute("value","running");
         let intervalId = setInterval(() => {
             let eventName;
@@ -113,57 +114,58 @@ export class CountdownTimer extends AppElement {
                 minutes:0,
                 seconds:0
             }
-            this.setAttribute("value","stopped");  
+            this.setAttribute("value","stopped");
             this.render();
         }
     }
 
     render(){
-        this.innerHTML =  /* html */`
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
-            <div class="container">
-                ${this.getTitles()}
-                <div class="columns is-centered">
-                    <div class="column is-4">
-                        <div class="level is-mobile" ${this.setAnimation(this.state.animation)}>
-                            <div class="level-item has-text-centered">
-                                <div>
-                                <p class="title">${this.state.count?.days===undefined?0:this.state.count.days}</p>
-                                <p class="heading">${this.state.days?.text[this.state.context.lang]!=undefined?this.state.days.text[this.state.context.lang]:`days`}</p>
+        render(
+            <section class={this.getClassNames(["section"], this.state?.classList)} {...this.getAnimationProps(this.state.animation)} style={this.getBackgroundStyle()}>
+                <div class="container">
+                    {this.getTitlesJSX()}
+                    <div class="columns is-centered">
+                        <div class="column is-4">
+                            <div class="level is-mobile" {...this.getAnimationProps(this.state.animation)}>
+                                <div class="level-item has-text-centered">
+                                    <div>
+                                    <p class="title">{this.state.count?.days===undefined?0:this.state.count.days}</p>
+                                    <p class="heading">{this.state.days?.text[this.state.context.lang]!=undefined?this.state.days.text[this.state.context.lang]:`days`}</p>
+                                    </div>
+                                </div>
+                                <div class="level-item has-text-centered">
+                                    <div>
+                                    <p class="title">{this.state.count?.hours===undefined?0:this.state.count.hours}</p>
+                                    <p class="heading">{this.state.hours?.text[this.state.context.lang]!=undefined?this.state.hours.text[this.state.context.lang]:`hours`}</p>
+                                    </div>
+                                </div>
+                                <div class="level-item has-text-centered">
+                                    <div>
+                                    <p class="title">{this.state.count?.minutes===undefined?0:this.state.count.minutes}</p>
+                                    <p class="heading">{this.state.minutes?.text[this.state.context.lang]!=undefined?this.state.minutes.text[this.state.context.lang]:`minutes`}</p>
+                                    </div>
+                                </div>
+                                <div class="level-item has-text-centered">
+                                    <div>
+                                    <p class="title">{this.state.count?.seconds===undefined?0:this.state.count.seconds}</p>
+                                    <p class="heading">{this.state.seconds?.text[this.state.context.lang]!=undefined?this.state.seconds.text[this.state.context.lang]:`seconds`}</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="level-item has-text-centered">
-                                <div>
-                                <p class="title">${this.state.count?.hours===undefined?0:this.state.count.hours}</p>
-                                <p class="heading">${this.state.hours?.text[this.state.context.lang]!=undefined?this.state.hours.text[this.state.context.lang]:`hours`}</p>
-                                </div>
+                            <div class={this.getClassNames(["notification", "has-text-centered", "is-hidden"], this.state.message?.classList)} {...this.getAnimationProps(this.state.message.animation)}>
+                                {this.state.message.text[this.state.context.lang]}
                             </div>
-                            <div class="level-item has-text-centered">
-                                <div>
-                                <p class="title">${this.state.count?.minutes===undefined?0:this.state.count.minutes}</p>
-                                <p class="heading">${this.state.minutes?.text[this.state.context.lang]!=undefined?this.state.minutes.text[this.state.context.lang]:`minutes`}</p>
-                                </div>
-                            </div>
-                            <div class="level-item has-text-centered">
-                                <div>
-                                <p class="title" >${this.state.count?.seconds===undefined?0:this.state.count.seconds}</p>
-                                <p class="heading">${this.state.seconds?.text[this.state.context.lang]!=undefined?this.state.seconds.text[this.state.context.lang]:`seconds`}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div  ${this.getClasses(["notification", "has-text-centered", "is-hidden"], this.state.message?.classList)} ${this.setAnimation(this.state.message.animation)}>
-                            ${this.state.message.text[this.state.context.lang]}
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        `
+            </section>,
+            this
+        )
         if(this.getAttribute('value')==='stopped'){
             this.querySelector(".notification").classList.remove("is-hidden");
         }
     }
-        
+
 }
 
 customElements.define("countdown-timer", CountdownTimer)

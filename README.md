@@ -23,9 +23,9 @@ This library is part of the [CustumerJourney.js](https://customerjourney.ninja/)
 - WebinarInvitation
 
 ## Documentation 
-- [CustomerJourneyJS project](https://buyerjourney.ninja/).
-- [Getting Started](https://customerjourney.ninja/getting-started/).
-- [cj Libraries](https://customerjourney.ninja/documentation/components/).
+- [CustomerJourneyJS project](https://antoniofregoso.github.io/customerjourney/).
+- [Getting Started](https://antoniofregoso.github.io/customerjourney.ninja/getting-started/).
+- [cj Libraries](https://antoniofregoso.github.io/customerjourney.ninja/documentation/components/).
 
 ## cj-core is made with
 - [bulma](https://bulma.io/).
@@ -37,4 +37,4 @@ This library is part of the [CustumerJourney.js](https://customerjourney.ninja/)
 ## License
 cj-core is [GPL-3.0-or-later](./LICENSE).
 ## Sponsor
-[Become a CustumerJourney.js Sponsor](https://customerjourney.ninja/sponsor/).
+[Become a CustumerJourney.js Sponsor](https://antoniofregoso.github.io/customerjourney/sponsor/).

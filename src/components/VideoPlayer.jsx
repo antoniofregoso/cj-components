@@ -1,3 +1,4 @@
+import { render } from "preact";
 import { AppElement } from "@customerjourney/cj-core";
 import { Remarkable } from "remarkable";
 
@@ -32,14 +33,14 @@ export class VideoPlayer extends AppElement {
                 return 'youtu.be';
             }else if(/\.(mp4|webm|ogg)(\?|$)/i.test(url)){
                 return 'html5';
-            }            
+            }
             else {
                 return 'not supported';
             }
         }
     }
 
-    
+
     #getIframe(src){
         let videoSrc = this.#detectVideoSource(src);
         var iframe = '';
@@ -63,25 +64,31 @@ export class VideoPlayer extends AppElement {
     }
 
     render(){
-        this.innerHTML=/* html */`
-        <section ${this.getClasses(["section"], this.state?.classList)} ${this.setAnimation(this.state.animation)} ${this.getBackground()}>
-            <div class="container p-4 ">
-                ${this.getTitles()}
-                <div class="columns is-centered">
-                    <div class="column ${this.state.image?.size!=undefined?this.state.video.size:'is-10'}>
-                        <figure ${this.getClasses(["image"], this.state.video?.classList)} ${this.setAnimation(this.state.video?.animation)}>
-                            ${this.#getIframe(this.state.video?.src)}
-                        </figure>
-                        ${this.state.description?.text[this.state.context.lang]!=undefined?`
-                        <div ${this.getClasses(["content"], this.state.description?.classList)} ${this.setAnimation(this.state.description?.animation)}>
-                            ${this.md.render(this.state.description?.text[this.state.context.lang])}
-                        </div>`:''}  
-                        ${this.state.buttons!=undefined?this.buttonsRender(this.state.buttons):''}
+        render(
+            <section class={this.getClassNames(["section"], this.state?.classList)} {...this.getAnimationProps(this.state.animation)} style={this.getBackgroundStyle()}>
+                <div class="container p-4">
+                    {this.getTitlesJSX()}
+                    <div class="columns is-centered">
+                        <div class={`column ${this.state.image?.size!=undefined?this.state.video.size:'is-10'}`}>
+                            <figure
+                                class={this.getClassNames(["image"], this.state.video?.classList)}
+                                {...this.getAnimationProps(this.state.video?.animation)}
+                                dangerouslySetInnerHTML={{ __html: this.#getIframe(this.state.video?.src) }}
+                            />
+                            {this.state.description?.text[this.state.context.lang]!=undefined &&
+                                <div
+                                    class={this.getClassNames(["content"], this.state.description?.classList)}
+                                    {...this.getAnimationProps(this.state.description?.animation)}
+                                    dangerouslySetInnerHTML={{ __html: this.md.render(this.state.description?.text[this.state.context.lang]) }}
+                                />
+                            }
+                            {this.state.buttons!=undefined && this.buttonsRenderJSX(this.state.buttons)}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        `
+            </section>,
+            this
+        );
     }
 
 }

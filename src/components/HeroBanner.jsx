@@ -1,0 +1,165 @@
+import { render } from "preact";
+import { AppElement } from "@customerjourney/cj-core";
+import { icon } from "@fortawesome/fontawesome-svg-core";
+import { Remarkable } from "remarkable";
+import { faCircleArrowDown } from '@fortawesome/free-solid-svg-icons';
+
+export class HeroBanner extends AppElement {
+
+    #default = {
+      alignment:"has-text-centered",
+      context:{
+        lang:"en"
+    }
+    };
+
+constructor(props={}){
+    super();
+    this.eventName = "user:click-hero-banner";
+    this.state =this.initState(this.#default,props);
+    this.getAttribute("id")||this.setAttribute("id",this.state.id||`component-${Math.floor(Math.random() * 100)}`);
+    this.md = new Remarkable();
+}
+
+static get observedAttributes() {
+  return ["value", "alignment"];
+}
+
+attributeChangedCallback(name, old, now) {
+  this.render()
+}
+
+handleEvent(event) {
+        if (event.type === "click") {
+            if (event.target.tagName==='BUTTON'){
+              if(this.state.buttons?.eventName!=undefined){
+                this.eventName = this.state.buttons.eventName
+              }
+              const clickFunnel = new CustomEvent(this.eventName,{
+              detail:{source:event.target.id},
+              bubbles: true,
+              composed: true
+              });
+              this.dispatchEvent(clickFunnel);
+            } else if (event.target.tagName==='path' || event.target.tagName==='svg'){
+                this.scrollDown();
+            }
+        }
+    }
+
+scrollDown(){
+  window.scroll({
+  top: window.scrollY + window.innerHeight,
+  left: 0,
+  behavior: "smooth",
+});
+}
+
+
+
+#icon = icon(faCircleArrowDown, {classes: ['fa-3x',  this.state?.scrollButton?.color!=undefined?this.state.scrollButton.color:'has-text-white']}).html[0];
+
+#getVideos(videos){
+    return videos.map((video, i) => {
+      const type = video.match(/\.([0-9a-z]+)(?=[?#])?$/i) ? video.match(/\.([0-9a-z]+)(?=[?#])?$/i)[1] : '';
+      return <source key={i} src={video} type={`video/${type}`} />;
+    });
+  };
+
+render(){
+    render(
+        <>
+            <style>{`
+    .icon {
+      width: 3em;
+      height: 3em;
+      vertical-align: -.125em;
+      text-shadow: 1px 1px 2px black;
+    }
+    ${this.state.backgroundVideo?.videos!=undefined?`
+      #${this.state.id}-content {
+        position: relative;
+        overflow: hidden;
+      }
+      #${this.state.id}-vid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+      #${this.state.id}-vid video {
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+      }
+      `:''}
+  `}</style>
+            <div id={`${this.state.id}-content`} class={this.getClassNames(["hero"], this.state.classList)} {...this.getAnimationProps(this.state.animation)} style={this.getBackgroundStyle()}>
+                {this.state.backgroundVideo?.videos!=undefined &&
+                    <div id={`${this.state.id}-vid`}>
+                        <video
+                            poster={this.state?.backgroundVideo?.poster?this.state.backgroundVideo.poster:''}
+                            id="bgvid"
+                            playsinline
+                            autoplay
+                            muted
+                            loop
+                        >
+                            {this.#getVideos(this.state.backgroundVideo.videos)}
+                        </video>
+                    </div>
+                }
+                <div class={`hero-body ${this.state.alignment}`}>
+                    <div class={this.getClassNames(["container"], this.state.body?.classList)}>
+                        {this.state.caption?.text[this.state.context.lang]!=undefined &&
+                            <p class={this.getClassNames(["subtitle"], this.state.caption?.classList)} {...this.getAnimationProps(this.state.caption.animation)}>
+                                {this.state.caption.text[this.state.context.lang]}
+                            </p>
+                        }
+                        {this.state.title?.text[this.state.context.lang]!=undefined &&
+                            <p class={this.getClassNames(["title"], this.state.title?.classList)} {...this.getAnimationProps(this.state.title.animation)}>
+                                {this.state.title.text[this.state.context.lang]}
+                            </p>
+                        }
+                        {this.state.subtitle?.text[this.state.context.lang]!=undefined &&
+                            <p class={this.getClassNames(["subtitle"], this.state.subtitle?.classList)} {...this.getAnimationProps(this.state.subtitle.animation)}>
+                                {this.state.subtitle.text[this.state.context.lang]}
+                            </p>
+                        }
+                        {this.state.description?.text[this.state.context.lang]!=undefined &&
+                            <div
+                                class={this.getClassNames(["content"], this.state.description?.classList)}
+                                {...this.getAnimationProps(this.state.description?.animation)}
+                                dangerouslySetInnerHTML={{ __html: this.md.render(this.state.description?.text[this.state.context.lang]) }}
+                            />
+                        }
+                        {this.state.buttons!=undefined && this.buttonsRenderJSX(this.state.buttons)}
+                    </div>
+                </div>
+                {this.state.scrollButton?.color!=undefined &&
+                    <div class="hero-foot has-text-centered">
+                        <span class="icon scroll-down" dangerouslySetInnerHTML={{ __html: this.#icon }} />
+                    </div>
+                }
+            </div>
+        </>,
+        this
+    );
+    this.addEvents();
+    if (this.state.scrollButton?.color!=undefined){
+      let scroolDown = this.querySelector(".scroll-down");
+      scroolDown.addEventListener("click",this);
+    }
+    }
+
+}
+
+customElements.define("hero-banner", HeroBanner);
