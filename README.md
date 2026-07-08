@@ -1,7 +1,7 @@
 # cj-components
 Basic components to generate sales funnels and touchpoints from the CustomerJourney.js project in javascript with a delicious vanilla flavor
 ## CustumerJourney.js
-This library is part of the [CustumerJourney.js](https://customerjourney.ninja/) project. Vanilla JavaScript libraries optimized for creating sales funnels with hyper-personalized customer experience powered by artificial intelligence.
+This library is part of the [CustumerJourney.js](https://antoniofregoso.github.io/customerjourney/) project. Vanilla JavaScript libraries optimized for creating sales funnels with hyper-personalized customer experience powered by artificial intelligence.
 ## Components
 - CardsList
 - CtaBanner
@@ -24,8 +24,8 @@ This library is part of the [CustumerJourney.js](https://customerjourney.ninja/)
 
 ## Documentation 
 - [CustomerJourneyJS project](https://antoniofregoso.github.io/customerjourney/).
-- [Getting Started](https://antoniofregoso.github.io/customerjourney.ninja/getting-started/).
-- [cj Libraries](https://antoniofregoso.github.io/customerjourney.ninja/documentation/components/).
+- [Getting Started](https://antoniofregoso.github.io/customerjourney/getting-started/).
+- [cj Libraries](https://antoniofregoso.github.io/customerjourney/documentation/components/).
 
 ## cj-core is made with
 - [bulma](https://bulma.io/).
