@@ -1,6 +1,6 @@
 {
   "name": "@customerjourney/cj-components",
-  "version": "0.13.1",
+  "version": "1.0.0",
   "description": "Component for the Customer Journey project, providing reusable UI elements for building touchpoints and funnels.",
   "type": "module",
   "main": "scr/index.js",
@@ -39,7 +39,7 @@
   "bugs": {
     "url": "https://github.com/antoniofregoso/cj-components/issues"
   },
-  "homepage": "https://customerjourney.ninja/documentation/components/",
+  "homepage": "https://antoniofregoso.github.io/customerjourney/documentation/components/",
   "keywords": [
     "vanilla-javascripts",
     "components",
