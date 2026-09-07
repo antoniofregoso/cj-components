@@ -10,7 +10,7 @@ Basic components to generate sales funnels and touchpoints for the CustomerJourn
 ## Installation
 
 ```bash
-npm install @customerjourney/cj-components
+npm install @customerjourney/cj-core @customerjourney/cj-components
 ```
 
 `@customerjourney/cj-core` is a peer dependency.
